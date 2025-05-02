@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 from .models import (
     Slot, Product, Booking
     )
@@ -18,7 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'date', 'slot', 'product']
+        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment']
 
     def validate(self, data):
         product = data['product']
@@ -39,23 +41,23 @@ class BookingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         booking = Booking.objects.create(**validated_data)
 
-        # Extract customer email
-        customer_email = 'shilna2447@gmail.com'
-        # Email details
+        customer_email = booking.email
+        context = {
+            'name': booking.name,
+            'product_name': booking.product.name,
+            'date': booking.date,
+            'slot': booking.slot,
+        }
+
+        # Render email HTML template
+        html_message = render_to_string('customer_email.html', context)
         subject = 'Booking Confirmation - DD CAMERAS'
-        message = f"""Dear Shilna,
-
-Your booking for "{booking.product.name}" on {booking.date} at slot {booking.slot} is confirmed.
-
-Thank you for choosing DD CAMERAS!
-
-Regards,
-DD CAMERAS Team
-"""
         from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [customer_email, 'ddcameras12@gmail.com']  # Send to customer + admin
+        recipient_list = [customer_email, 'ddcameras12@gmail.com']
 
         # Send email
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        email = EmailMessage(subject, html_message, from_email, recipient_list)
+        email.content_subtype = 'html'
+        email.send(fail_silently=False)
 
         return booking

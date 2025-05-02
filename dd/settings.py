@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-0^$z6ulx&q%+v+2ad2u*dau$z6n39s^(6!v3oiul3ghhiq@d*r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.onrender.com']
 
 
 # Application definition
@@ -135,3 +135,6 @@ EMAIL_USE_TLS = False
 EMAIL_HOST_USER = 'dronedude@ddcameras.com'
 EMAIL_HOST_PASSWORD = '@Cheilmea85'
 DEFAULT_FROM_EMAIL = 'DD CAMERAS <dronedude@ddcameras.com>'
+
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
