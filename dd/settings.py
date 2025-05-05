@@ -138,3 +138,6 @@ DEFAULT_FROM_EMAIL = 'DD CAMERAS <dronedude@ddcameras.com>'
 
 import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [ BASE_DIR / 'booking/static' ]
