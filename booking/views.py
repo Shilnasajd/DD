@@ -55,6 +55,11 @@ class GetProductView(APIView):
         availability.append({
             'product_id':    product.id,
             'name':  product.name,
+            'one_line': product.one_line,
+            'short_description': product.short_description,
+            'description': product.description,
+            'price': product.price,
+            'image': product.image,
             'available':  remaining
         })
 
