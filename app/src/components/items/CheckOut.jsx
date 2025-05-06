@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -79,23 +80,28 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg">
+    <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg ">
+      <div className="flex items-center gap-2 mb-3 flex-row cursor-pointer" onClick={() => navigate(-1) }>  <ArrowLeft /> Return to Home</div>
+    
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left: Product Details */}
         <div className="space-y-6">
-          <h1 className="text-4xl font-semibold text-gray-800">{`Pay ${product.name}`}</h1>
+        
           <div className="space-y-3 text-gray-600">
+          <p className="text-xl font-semibold text-gray-800">{`Pay DD CAMERAS`}</p>
+          <h1 className="text-3xl font-semibold text-gray-800">{product.price.split(" ")[0]}</h1>
             <div className="flex justify-between">
-              <span>Price</span>
-              <span>{product.price}</span>
+              <span>{product.name}</span>
+              <span>{product.price.split(" ")[0]}</span>
             </div>
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>{product.price}</span>
+              <span>{product.price.split(" ")[0]}</span>
             </div>
+            <hr />
             <div className="flex justify-between font-semibold mt-6 text-gray-800">
               <span>Total due</span>
-              <span>{product.price}</span>
+              <span>{product.price.split(" ")[0]}</span>
             </div>
           </div>
         </div>
