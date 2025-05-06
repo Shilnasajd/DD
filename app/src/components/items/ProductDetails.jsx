@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
@@ -21,28 +21,16 @@ const ProductDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [selectedSlot, setSelectedSlot] = useState(null);
-
-  const fetchProductDetails = async () => {
-    const res = await axios.get(
-      `https://dd-3ecg.onrender.com/api/get_product/?product=${id}&date=${selectedDate}`
-    );
-    return res.data[0];
-  };
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isOutOfStock, setIsOutOfStock] = useState(false);
 
   const fetchSlots = async () => {
     const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
     return res.data;
   };
-
-  const {
-    data: product,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["productDetails", id],
-    queryFn: fetchProductDetails,
-    enabled: !!id,
-  });
 
   const {
     data: slots = [],
@@ -52,11 +40,38 @@ const ProductDetails = () => {
     queryFn: fetchSlots,
   });
 
-  if (isLoading) return <div className="p-4">Loading...</div>;
-  if (isError || !product)
-    return <div className="p-4 text-red-500">Error loading product.</div>;
+  const fetchProductDetails = async (date, showSpinner = false) => {
+    try {
+      if (showSpinner) setModalLoading(true);
+      setIsLoading(true);
+      const res = await axios.get(
+        `https://dd-3ecg.onrender.com/api/get_product/?product=${id}&date=${date}`
+      );
+      const prod = res.data[0];
+      setProduct(prod);
+      setIsOutOfStock(prod.available === "Out of stock");
+      setIsError(false);
+    } catch (error) {
+      setIsError(true);
+      setProduct(null);
+    } finally {
+      setIsLoading(false);
+      if (showSpinner) setModalLoading(false);
+    }
+  };
 
-  const [priceOnly, duration] = product.price?.split(" ") || ["₹0.00", "0 min"];
+  useEffect(() => {
+    if (id) {
+      fetchProductDetails(selectedDate);
+    }
+  }, [id]);
+
+  const handleDateChange = (newDate) => {
+    const formattedDate = newDate.format("YYYY-MM-DD");
+    setSelectedDate(formattedDate);
+    setSelectedSlot(null);
+    fetchProductDetails(formattedDate, true);
+  };
 
   const handleConfirmBooking = () => {
     if (selectedSlot) {
@@ -74,10 +89,16 @@ const ProductDetails = () => {
     setIsOpen(false);
   };
 
+  if (isLoading && !modalLoading)
+    return <div className="p-4">Loading product details...</div>;
+  if (isError || !product)
+    return <div className="p-4 text-red-500">Error loading product.</div>;
+
+  const [priceOnly, duration] = product.price?.split(" ") || ["₹0.00", "0 min"];
+
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        {/* Image */}
         <div className="w-full">
           <img
             src={product.image?.trim()}
@@ -85,8 +106,6 @@ const ProductDetails = () => {
             className="w-full h-96 object-contain rounded shadow"
           />
         </div>
-
-        {/* Product Details */}
         <div className="space-y-4">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-gray-700 text-base">{product.short_description}</p>
@@ -108,7 +127,7 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* Book Now Modal */}
+      {/* Modal */}
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -116,7 +135,14 @@ const ProductDetails = () => {
       >
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="bg-white max-w-5xl w-full rounded-2xl shadow-lg p-6 overflow-y-auto max-h-[90vh]">
+          <Dialog.Panel className="bg-white max-w-5xl w-full rounded-2xl shadow-lg p-6 overflow-y-auto max-h-[90vh] relative">
+            {/* Spinner Overlay */}
+            {modalLoading && (
+              <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+                <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin" />
+              </div>
+            )}
+
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-[45%] space-y-4">
                 <h2 className="text-xl font-normal">{product.name}</h2>
@@ -134,9 +160,8 @@ const ProductDetails = () => {
                 )}
               </div>
 
-              {/* Left: Date Picker & Right: Time Slots */}
               <div className="flex flex-col md:flex-row gap-6 w-full">
-                {/* Left: Date Picker */}
+                {/* Left Date Picker */}
                 <div
                   className="w-full md:w-1/2 p-4 bg-white rounded shadow ml-[-10px]"
                   onClick={(e) => e.stopPropagation()}
@@ -145,10 +170,7 @@ const ProductDetails = () => {
                     <StaticDatePicker
                       displayStaticWrapperAs="desktop"
                       value={dayjs(selectedDate)}
-                      onChange={(newValue) => {
-                        setSelectedDate(newValue);
-                        setSelectedSlot(null);
-                      }}
+                      onChange={handleDateChange}
                       slots={{
                         actionBar: () => null,
                       }}
@@ -175,23 +197,27 @@ const ProductDetails = () => {
                   </LocalizationProvider>
                 </div>
 
-                {/* Right: Time Slots */}
+                {/* Right Time Slots */}
                 <div className="w-full md:w-1/3 space-y-4">
                   <h4 className="font-semibold text-gray-800">
-                    {selectedDate
-                      ? dayjs(selectedDate).format("dddd, MMM D")
-                      : "Select a date"}
+                    {dayjs(selectedDate).format("dddd, MMM D")}
                   </h4>
+                  {isOutOfStock && (
+                    <p className="text-red-600 text-sm">
+                      Product is out of stock for this date
+                    </p>
+                  )}
                   <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2">
                     {slots.map((slot) => (
                       <button
                         key={slot.id}
-                        onClick={() => setSelectedSlot(slot)}
+                        onClick={() => !isOutOfStock && setSelectedSlot(slot)}
                         className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors duration-200 w-full ${
                           selectedSlot?.id === slot.id
                             ? "bg-black text-white border-black"
                             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
                         }`}
+                        disabled={isOutOfStock}
                       >
                         {slot.slot}
                       </button>
