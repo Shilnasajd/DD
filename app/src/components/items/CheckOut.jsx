@@ -41,7 +41,7 @@ console.log("selectedDate.toString():", selectedDate.toString());
     console.log(formattedDate,"formattedDate")
     console.log("Product from location:", product);
     const payload = {
-      date: formattedDate,
+      date: selectedDate,
     
       slot: selectedSlot?.id,
       product: product?.product_id,
