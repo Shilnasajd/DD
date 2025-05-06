@@ -146,8 +146,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'booking/static' ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True  # This allows all origins
 
+# OR
+
+# If you want to restrict origins, use the following:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
