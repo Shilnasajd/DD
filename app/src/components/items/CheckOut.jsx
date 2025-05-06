@@ -26,6 +26,9 @@ const CheckoutPage = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(selectedDate,"date")
+    console.log("selectedDate instanceof dayjs:", dayjs.isDayjs(selectedDate));
+console.log("selectedDate.toString():", selectedDate.toString());
     if (!selectedDate || !selectedSlot) {
       setError("Please select a date and time slot before booking.");
       return;
@@ -33,10 +36,13 @@ const CheckoutPage = () => {
 
     setSubmitting(true);
     setError("");
+    const formattedDate = dayjs(selectedDate?.$d).format("YYYY-MM-DD");
 
+    console.log(formattedDate,"formattedDate")
     console.log("Product from location:", product);
     const payload = {
-      date: dayjs(selectedDate).format("YYYY-MM-DD"),
+      date: formattedDate,
+    
       slot: selectedSlot?.id,
       product: product?.product_id,
       email: contactInfo.email,
