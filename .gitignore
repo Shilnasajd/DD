@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -22,3 +23,52 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+=======
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+
+# Virtual environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+# db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Git
+.git/
+
+# PyCharm
+.idea/
+
+# Compiled files
+*.so
+
+# Environment files
+*.env
+.env
+
+# Migration files (optional, if you don't want to track them)
+**/migrations/*.py
+!**/migrations/__init__.py
+>>>>>>> 985f9efff0aa1f2e22e8a514a5b7b736ff330e10
