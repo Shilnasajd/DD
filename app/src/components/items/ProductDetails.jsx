@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { Dialog } from "@headlessui/react";
 import { format } from "date-fns";
 import dayjs from 'dayjs';
@@ -12,23 +12,9 @@ const getTodayDate = () => {
   return today.toISOString().split("T")[0];
 };
 
-const generateSlots = () => {
-  const slots = [];
-  for (let hour = 0; hour <= 22; hour++) {
-    const start = new Date();
-    start.setHours(hour, 0);
-    const end = new Date();
-    end.setHours(hour + 1, 0);
-    slots.push({
-      start: format(start, "h:mm a"),
-      end: format(end, "h:mm a"),
-    });
-  }
-  return slots;
-};
-
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -50,12 +36,33 @@ const ProductDetails = () => {
     enabled: !!id,
   });
 
+  const {
+    data: slots = [],
+    isLoading: slotsLoading,
+    isError: slotsError,
+  } = useQuery({
+    queryKey: ["slots"],
+    queryFn: async () => {
+      const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
+      return res.data;
+    },
+  });
+
   if (isLoading) return <div className="p-4">Loading...</div>;
   if (isError || !product)
     return <div className="p-4 text-red-500">Error loading product.</div>;
 
   const [priceOnly, duration] = product.price?.split(" ") || ["₹0.00", "0 min"];
-  const slots = generateSlots();
+
+  const handleConfirmBooking = () => {
+    if (selectedSlot) {
+      navigate("/checkout", {
+        state: { product, selectedDate, selectedSlot },
+      });
+    } else {
+      alert("Please select a slot.");
+    }
+  };
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -97,7 +104,6 @@ const ProductDetails = () => {
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="bg-white max-w-4xl w-full rounded shadow-lg p-6 overflow-y-auto max-h-[90vh]">
             <div className="flex flex-col md:flex-row gap-6">
- 
               <div className="md:w-1/3 space-y-4">
                 <h2 className="text-xl font-bold">{product.name}</h2>
                 <p>
@@ -107,53 +113,83 @@ const ProductDetails = () => {
                 {selectedSlot ? (
                   <p>
                     <span className="font-semibold">Slot:</span>{" "}
-                    {selectedSlot.start} - {selectedSlot.end} ({duration} min)
+                    {selectedSlot.slot} ({duration})
                   </p>
                 ) : (
                   <p className="text-gray-500 italic">No slot selected</p>
                 )}
               </div>
 
-   
               <div className="flex flex-col md:flex-row gap-4">
-  {/* Left: Date Picker */}
-  <div className="md:w-1/2">
-    <StaticDatePicker
-      defaultValue={dayjs('2022-04-17')}
-      onChange={(e) => {
-        setSelectedDate(e.target.value);
-        setSelectedSlot(null);
-      }}
-    />
-  </div>
+                {/* Left: Date Picker */}
+                <div className="md:w-1/2">
+                  <StaticDatePicker
+                    defaultValue={dayjs(selectedDate)}
+                    onChange={(date) => {
+                      setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+                      setSelectedSlot(null);
+                    }}
+                  />
+                </div>
 
-  {/* Right: Time Slots */}
-  <div className="md:w-1/2 space-y-4">
-    <h4 className="font-semibold">
-      {selectedDate ? dayjs(selectedDate).format("dddd, MMM D") : "Select a date"}
-    </h4>
-    <div className=" gap-2 max-h-[300px] overflow-y-auto pr-2">
-      {slots.map((slot, index) => (
-        <button
-          key={index}
-          onClick={() => setSelectedSlot(slot)}
-          className={`px-3 py-2 border rounded text-sm w-full ${
-            selectedSlot?.start === slot.start
-              ? "bg-black text-white"
-              : "hover:bg-gray-100"
-          }`}
-        >
-          {slot.start}
-        </button>
-      ))}
-    </div>
-  </div>
-</div>
+                {/* Right: Time Slots */}
+                <div className="md:w-1/2 space-y-4">
+                  <h4 className="font-semibold">
+                    {selectedDate
+                      ? dayjs(selectedDate).format("dddd, MMM D")
+                      : "Select a date"}
+                  </h4>
 
+                  {product.available === "Out of stock" && (
+                    <p className="text-red-600 text-sm font-medium mb-2">
+                      This product is out of stock on {dayjs(selectedDate).format("MMM D, YYYY")}.
+                    </p>
+                  )}
+
+                  <div className="gap-2 max-h-[300px] overflow-y-auto pr-2">
+                    {slotsLoading ? (
+                      <div>Loading slots...</div>
+                    ) : slotsError ? (
+                      <div className="text-red-500">Failed to load slots.</div>
+                    ) : (
+                      slots.map((slot) => {
+
+                        
+                        const isOutOfStock = product.available === "Out of stock";
+
+                        return (
+                          <button
+                            key={slot.id}
+                            onClick={() => {
+                              if (!isOutOfStock) setSelectedSlot(slot);
+                            }}
+                            disabled={isOutOfStock}
+                            className={`px-3 py-2 border rounded text-sm w-full mb-2 ${
+                              selectedSlot?.slot === slot.slot
+                                ? "bg-black text-white"
+                                : "hover:bg-gray-100"
+                            } ${isOutOfStock ? "bg-gray-300 text-gray-500 cursor-not-allowed" : ""}`}
+                          >
+                            {slot.slot}
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
- 
             <div className="flex justify-end mt-6">
+              <button
+                onClick={handleConfirmBooking}
+                className="px-4 py-2 bg-black text-white rounded hover:opacity-90 transition"
+              >
+                Confirm Booking
+              </button>
+            </div>
+
+            <div className="flex justify-end mt-4">
               <button
                 onClick={() => setIsOpen(false)}
                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"

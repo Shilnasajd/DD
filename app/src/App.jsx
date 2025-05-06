@@ -13,6 +13,7 @@ const Rentals = lazy(() => import('./pages/rentals'))
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Itemdetails from './pages/itemdetails'
+import CheckoutPage from './components/items/CheckOut';
 function App() {
   AOS.init();
   return (  
@@ -22,9 +23,10 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/rentals" element={<Rentals />} />
           <Route path="/:id" element={<Itemdetails />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           {/* 
           <Route path="/product/:id" element={<ProductViewPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} /> */}
+           */}
         </Routes>
         </LocalizationProvider>
       </Suspense>
