@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +36,7 @@ const CheckoutPage = () => {
 
     console.log("Product from location:", product);
     const payload = {
-      date: selectedDate,
+      date: dayjs(selectedDate).format("YYYY-MM-DD"),
       slot: selectedSlot?.id,
       product: product?.product_id,
       email: contactInfo.email,
