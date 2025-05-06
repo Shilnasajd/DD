@@ -49,15 +49,35 @@ class BookingSerializer(serializers.ModelSerializer):
             'slot': booking.slot,
         }
 
-        # Render email HTML template
-        html_message = render_to_string('customer_email.html', context)
-        subject = 'Booking Confirmation - DD CAMERAS'
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [customer_email, 'ddcameras12@gmail.com']
+        # Send email to customer
+        try:
+            customer_html = render_to_string('customer_email.html', context)
+            customer_subject = 'Booking Confirmation - DD CAMERAS'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [customer_email]
 
-        # Send email
-        email = EmailMessage(subject, html_message, from_email, recipient_list)
-        email.content_subtype = 'html'
-        email.send(fail_silently=False)
+            customer_email_message = EmailMessage(
+                customer_subject, customer_html, from_email, recipient_list
+            )
+            customer_email_message.content_subtype = 'html'
+            customer_email_message.send(fail_silently=False)
+        except Exception as e:
+            # Log the error or handle it accordingly
+            print(f"Error sending customer email: {e}")
+
+        # Send email to admin
+        try:
+            admin_html = render_to_string('admin_email.html', context)
+            admin_subject = 'Booking Alert - DD CAMERAS'
+            admin_recipient = ['ddcameras12@gmail.com']
+
+            admin_email_message = EmailMessage(
+                admin_subject, admin_html, from_email, admin_recipient
+            )
+            admin_email_message.content_subtype = 'html'
+            admin_email_message.send(fail_silently=False)
+        except Exception as e:
+            # Log the error or handle it accordingly
+            print(f"Error sending admin email: {e}")
 
         return booking
