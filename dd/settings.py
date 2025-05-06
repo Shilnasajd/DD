@@ -152,4 +152,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
+    "https://dazzling-lollipop-c3ac46.netlify.app"
 ]
