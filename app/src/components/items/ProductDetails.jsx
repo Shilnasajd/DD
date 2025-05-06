@@ -153,8 +153,6 @@ const ProductDetails = () => {
                       <div className="text-red-500">Failed to load slots.</div>
                     ) : (
                       slots.map((slot) => {
-
-                        
                         const isOutOfStock = product.available === "Out of stock";
 
                         return (
