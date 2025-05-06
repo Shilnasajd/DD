@@ -15,21 +15,6 @@ const getTodayDate = () => {
   return today.toISOString().split("T")[0];
 };
 
-const generateSlots = () => {
-  const slots = [];
-  for (let hour = 0; hour <= 22; hour++) {
-    const start = new Date();
-    start.setHours(hour, 0);
-    const end = new Date();
-    end.setHours(hour + 1, 0);
-    slots.push({
-      start: format(start, "h:mm a"),
-      end: format(end, "h:mm a"),
-    });
-  }
-  return slots;
-};
-
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -44,6 +29,11 @@ const ProductDetails = () => {
     return res.data[0];
   };
 
+  const fetchSlots = async () => {
+    const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
+    return res.data;
+  };
+
   const {
     data: product,
     isLoading,
@@ -54,12 +44,19 @@ const ProductDetails = () => {
     enabled: !!id,
   });
 
+  const {
+    data: slots = [],
+    isLoading: slotsLoading,
+  } = useQuery({
+    queryKey: ["slots"],
+    queryFn: fetchSlots,
+  });
+
   if (isLoading) return <div className="p-4">Loading...</div>;
   if (isError || !product)
     return <div className="p-4 text-red-500">Error loading product.</div>;
 
   const [priceOnly, duration] = product.price?.split(" ") || ["₹0.00", "0 min"];
-  const slots = generateSlots();
 
   const handleConfirmBooking = () => {
     if (selectedSlot) {
@@ -70,8 +67,8 @@ const ProductDetails = () => {
       alert("Please select a slot.");
     }
   };
+
   const handleCancel = () => {
-    // Logic to reset the selection if needed
     setSelectedDate(getTodayDate());
     setSelectedSlot(null);
     setIsOpen(false);
@@ -130,7 +127,7 @@ const ProductDetails = () => {
                 {selectedSlot ? (
                   <p className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-gray-600" />
-                    {selectedSlot.start} - {selectedSlot.end} ({duration} min)
+                    {selectedSlot.slot} ({duration} min)
                   </p>
                 ) : (
                   <p className="text-gray-500 italic">No slot selected</p>
@@ -142,7 +139,7 @@ const ProductDetails = () => {
                 {/* Left: Date Picker */}
                 <div
                   className="w-full md:w-1/2 p-4 bg-white rounded shadow ml-[-10px]"
-                  onClick={(e) => e.stopPropagation()} // Prevent click propagation to the Dialog
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <StaticDatePicker
@@ -150,10 +147,10 @@ const ProductDetails = () => {
                       value={dayjs(selectedDate)}
                       onChange={(newValue) => {
                         setSelectedDate(newValue);
-                        setSelectedSlot(null); // Reset selected slot when a new date is picked
+                        setSelectedSlot(null);
                       }}
                       slots={{
-                        actionBar: () => null, // Hides the OK/Cancel buttons
+                        actionBar: () => null,
                       }}
                       slotProps={{
                         textField: {
@@ -186,17 +183,17 @@ const ProductDetails = () => {
                       : "Select a date"}
                   </h4>
                   <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2">
-                    {slots.map((slot, index) => (
+                    {slots.map((slot) => (
                       <button
-                        key={index}
+                        key={slot.id}
                         onClick={() => setSelectedSlot(slot)}
                         className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors duration-200 w-full ${
-                          selectedSlot?.start === slot.start
+                          selectedSlot?.id === slot.id
                             ? "bg-black text-white border-black"
                             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
                         }`}
                       >
-                        {slot.start}
+                        {slot.slot}
                       </button>
                     ))}
                   </div>
