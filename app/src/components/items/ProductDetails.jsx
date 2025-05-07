@@ -171,6 +171,7 @@ const ProductDetails = () => {
                       displayStaticWrapperAs="desktop"
                       value={dayjs(selectedDate)}
                       onChange={handleDateChange}
+                      minDate={dayjs()} // ✅ This disables past dates
                       slots={{
                         actionBar: () => null,
                       }}
