@@ -1,13 +1,14 @@
 import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { product, selectedDate, selectedSlot } = location.state || {};
+  const { product, selectedDates, selectedDate, selectedSlot, isRangeBooking } = location.state || {};
 
   const [contactInfo, setContactInfo] = useState({
     email: "",
@@ -16,6 +17,7 @@ const CheckoutPage = () => {
     phoneNumber: "",
     comment: "",
   });
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -26,57 +28,44 @@ const CheckoutPage = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(selectedDate,"date")
-    console.log("selectedDate instanceof dayjs:", dayjs.isDayjs(selectedDate));
-console.log("selectedDate.toString():", selectedDate.toString());
-    if (!selectedDate || !selectedSlot) {
-      setError("Please select a date and time slot before booking.");
-      return;
-    }
+    const isRange = isRangeBooking;
 
-    setSubmitting(true);
-    setError("");
-    const formattedDate = dayjs(selectedDate?.$d).format("YYYY-MM-DD");
-
-    console.log(formattedDate,"formattedDate")
-    console.log("Product from location:", product);
     const payload = {
-      date: selectedDate,
-    
-      slot: selectedSlot?.id,
       product: product?.product_id,
       email: contactInfo.email,
       name: contactInfo.fullName,
       phone: contactInfo.phoneNumber,
       comment: contactInfo.comment,
+      ...(isRange
+        ? { dates: selectedDates }
+        : {
+            date: dayjs(selectedDate).format("YYYY-MM-DD"),
+            slot: selectedSlot?.id,
+          }),
     };
-    console.log(payload)
+
+    const apiEndpoint = isRange
+      ? "https://dd-3ecg.onrender.com/api/book_multiple_dates/"
+      : "https://dd-3ecg.onrender.com/api/bookings/";
 
     try {
-      const resp = await fetch("https://dd-3ecg.onrender.com/api/bookings/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      setSubmitting(true);
+      const response = await axios.post(apiEndpoint, payload);
 
-      if (!resp.ok) {
-        const errData = await resp.json();
-        throw new Error(errData.message || "Booking failed");
+      if (response.status === 200) {
+        setSuccess(true);   // ✅ Show success message
+        setError("");       // ✅ Clear errors
+        console.log("Booking successful:", response.data);
+
+        // ✅ Redirect after 3 seconds
+        setTimeout(() => {
+          navigate("/rentals");
+        }, 3000);
       }
-
-      const data = await resp.json();
-      console.log("Booking success:", data);
-
-      setSuccess(true);
-
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
     } catch (err) {
-      console.error(err);
-      setError(err.message);
+      console.error("Error submitting booking:", err);
+      setError("An error occurred while processing your booking.");
+      setSuccess(false);
     } finally {
       setSubmitting(false);
     }
@@ -87,16 +76,20 @@ console.log("selectedDate.toString():", selectedDate.toString());
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg ">
-      <div className="flex items-center gap-2 mb-3 flex-row cursor-pointer" onClick={() => navigate(-1) }>  <ArrowLeft /> Return to Home</div>
-    
+    <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg relative">
+      <div
+        className="flex items-center gap-2 mb-3 flex-row cursor-pointer"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft /> Return to Home
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left: Product Details */}
         <div className="space-y-6">
-        
           <div className="space-y-3 text-gray-600">
-          <p className="text-xl font-semibold text-gray-800">{`Pay DD CAMERAS`}</p>
-          <h1 className="text-3xl font-semibold text-gray-800">{product.price.split(" ")[0]}</h1>
+            <p className="text-xl font-semibold text-gray-800">{`Pay DD CAMERAS`}</p>
+            <h1 className="text-3xl font-semibold text-gray-800">{product.price.split(" ")[0]}</h1>
             <div className="flex justify-between">
               <span>{product.name}</span>
               <span>{product.price.split(" ")[0]}</span>
@@ -116,11 +109,21 @@ console.log("selectedDate.toString():", selectedDate.toString());
         {/* Right: Contact Form */}
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold text-gray-800">Contact Information</h2>
-          
-          {error && <div className="text-sm text-red-600">{error}</div>}
-          {success && <div className="text-sm text-green-600">Booking Successful! Redirecting...</div>}
 
-          <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+          {error && <div className="text-sm text-red-600">{error}</div>}
+          {success && (
+            <div className="text-sm text-green-600">
+              Booking Successful! Redirecting to rentals...
+            </div>
+          )}
+
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div>
               <label htmlFor="email" className="block text-gray-700">Email</label>
               <input
@@ -195,12 +198,34 @@ console.log("selectedDate.toString():", selectedDate.toString());
               <button
                 type="submit"
                 disabled={submitting}
-                className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${
+                  submitting ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 {submitting ? (
-                  <div className="spinner-border spinner-border-sm text-white" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      ></path>
+                    </svg>
+                    Booking...
+                  </span>
                 ) : (
                   "Book Now"
                 )}
@@ -210,10 +235,10 @@ console.log("selectedDate.toString():", selectedDate.toString());
         </div>
       </div>
 
-      {/* Loader (when submitting) */}
+      {/* Fullscreen Loader Overlay */}
       {submitting && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="text-white">Processing your booking...</div>
+          <div className="text-white text-lg font-semibold">Processing your booking...</div>
         </div>
       )}
     </div>
