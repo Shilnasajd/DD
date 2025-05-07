@@ -227,9 +227,9 @@ const ProductDetails = () => {
                 setMultiDateMode(false);
               }}
             >
-              Book Single Date
+              Book
             </button>
-            <button
+            {/* <button
               className="bg-black text-white px-6 py-2 rounded hover:opacity-90 transition cursor-pointer"
               onClick={() => {
                 setIsOpen(true);
@@ -237,7 +237,7 @@ const ProductDetails = () => {
               }}
             >
               Book Date Range
-            </button>
+            </button> */}
           </div>
           <div>
             <h2 className="font-semibold text-lg mt-4 mb-2">Description</h2>
@@ -328,7 +328,7 @@ const ProductDetails = () => {
                   onClick={toggleDateMode}
                   className="text-sm text-blue-600 hover:underline"
                 >
-                  {multiDateMode ? "Switch to single date" : "Switch to date range"}
+                  {multiDateMode ? "Select single date" : "Select multiple dates"}
                 </button>
               </div>
 
