@@ -29,10 +29,13 @@ class BookingListCreateView(generics.ListCreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
+from datetime import datetime
+
 class GetProductView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = request.query_params.get('product')
         date = request.query_params.get('date')
+
         if not product_id or not date:
             return Response(
                 {'detail': 'Both "product" and "date" query parameters are required.'},
@@ -44,26 +47,39 @@ class GetProductView(APIView):
         except Product.DoesNotExist:
             return Response({'detail': 'Product not found.'}, status=404)
 
+        # Check if the 'date' parameter is a list of dates or a single date
+        dates = date.split(',') if ',' in date else [date]
+        
         availability = []
-        booked_count = Booking.objects.filter(
-            product=product,
-            date=date
-        ).count()
 
-        remaining = product.quantity - booked_count
-        if remaining <= 0:
-            remaining = 'Out of stock'
+        for date in dates:
+            try:
+                # Validate and parse the date string into a date object
+                parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({'detail': f'Invalid date format for {date}. Expected format: YYYY-MM-DD.'}, status=400)
+            
+            # Get the count of bookings for the product on the specific date
+            booked_count = Booking.objects.filter(
+                product=product,
+                date=parsed_date
+            ).count()
 
-        availability.append({
-            'product_id':    product.id,
-            'name':  product.name,
-            'one_line': product.one_line,
-            'short_description': product.short_description,
-            'description': product.description,
-            'price': product.price,
-            'image': product.image,
-            'available':  remaining
-        })
+            remaining = product.quantity - booked_count
+            if remaining <= 0:
+                remaining = 'Out of stock'
+
+            availability.append({
+                'product_id': product.id,
+                'name': product.name,
+                'one_line': product.one_line,
+                'short_description': product.short_description,
+                'description': product.description,
+                'price': product.price,
+                'image': product.image,
+                'date': str(parsed_date),
+                'available': remaining
+            })
 
         return Response(availability)
     
