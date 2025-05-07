@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
 
 from .models import (
     Slot,
@@ -12,7 +13,8 @@ from .models import (
 from .serializers import (
     SlotSerializer,
     ProductSerializer,
-    BookingSerializer
+    BookingSerializer,
+    MultipleDatesBookingSerializer
     )
 
 class SlotListCreateView(generics.ListCreateAPIView):
@@ -64,3 +66,15 @@ class GetProductView(APIView):
         })
 
         return Response(availability)
+    
+@api_view(['POST'])
+def book_multiple_dates(request):
+    serializer = MultipleDatesBookingSerializer(data=request.data)
+
+    if serializer.is_valid():
+        bookings = serializer.save()
+        return Response(
+            {"message": f"Successfully booked {len(bookings)} dates."},
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
