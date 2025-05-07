@@ -227,7 +227,7 @@ const ProductDetails = () => {
                 setMultiDateMode(false);
               }}
             >
-              Book
+              Book Now
             </button>
             {/* <button
               className="bg-black text-white px-6 py-2 rounded hover:opacity-90 transition cursor-pointer"
