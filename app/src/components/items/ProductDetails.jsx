@@ -9,6 +9,7 @@ import { StaticDatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Calendar, Clock } from "lucide-react";
+import { CircularProgress } from "@mui/material";
 
 const getTodayDate = () => {
   const today = new Date();
@@ -197,7 +198,7 @@ const ProductDetails = () => {
   }, [selectedDates, multiDateMode]);
 
   if (isLoading && !modalLoading)
-    return <div className="p-4">Loading product details...</div>;
+    return <div className='h-screen flex justify-center items-center' ><CircularProgress /></div>;
   if (isError || !product)
     return <div className="p-4 text-red-500">Error loading product.</div>;
 
@@ -314,7 +315,11 @@ const ProductDetails = () => {
                         {selectedSlot.slot} ({duration} min)
                       </p>
                     ) : (
-                      <p className="text-gray-500 italic">No slot selected</p>
+                      <span className="text-base font-medium">
+                      --:-- <span className="text-gray-500">(60 min)</span>
+                   <br />
+                    </span>
+
                     )}
                     {isOutOfStock && (
                       <p className="text-red-600 text-sm">
@@ -332,7 +337,7 @@ const ProductDetails = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-6 w-full">
+              <div className={`${!multiDateMode && "flex flex-col md:flex-row gap-6 w-full"}`}>
                 {/* Left Date Picker */}
                 <div
                   className="w-full md:w-1/2 p-4 bg-white rounded shadow ml-[-10px]"
@@ -375,34 +380,36 @@ const ProductDetails = () => {
                   <div className="w-full md:w-1/3 space-y-4">
                     <h4 className="font-semibold text-gray-800">
                       {multiDateMode
-                        ? "Select Time Slot"
+                        ? ""
                         : dayjs(selectedDate).format("dddd, MMM D")}
                     </h4>
                     <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2">
-                      {slots.map((slot) => (
-                        <button
-                          key={slot.id}
-                          onClick={() => {
-                            if (multiDateMode) {
-                              // For range booking, just select the slot
-                              setSelectedSlot(slot);
-                            } else {
-                              // For single date, check availability first
-                              !isOutOfStock && setSelectedSlot(slot);
-                            }
-                          }}
-                          className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors duration-200 w-full ${selectedSlot?.id === slot.id
-                            ? "bg-black text-white border-black"
-                            : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-                            } ${multiDateMode
-                              ? ""
-                              : isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                          disabled={!multiDateMode && isOutOfStock}
-                        >
-                          {slot.slot}
-                        </button>
-                      ))}
+                   {!multiDateMode&&
+                   slots.map((slot) => (
+                    <button
+                      key={slot.id}
+                      onClick={() => {
+                        if (multiDateMode) {
+                          // For range booking, just select the slot
+                          setSelectedSlot(slot);
+                        } else {
+                          // For single date, check availability first
+                          !isOutOfStock && setSelectedSlot(slot);
+                        }
+                      }}
+                      className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors duration-200 w-full ${selectedSlot?.id === slot.id
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                        } ${multiDateMode
+                          ? ""
+                          : isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                      disabled={!multiDateMode && isOutOfStock}
+                    >
+                      {slot.slot}
+                    </button>
+                  ))
+                   }   
                     </div>
                   </div>
                 )}
@@ -420,7 +427,7 @@ const ProductDetails = () => {
                 onClick={handleConfirmBooking}
                 className="px-4 py-2 bg-black text-white rounded hover:opacity-90 transition"
               >
-                {multiDateMode ? "Book Date Range" : "Book"}
+                {multiDateMode ? "Book " : "Book"}
               </button>
             </div>
           </Dialog.Panel>

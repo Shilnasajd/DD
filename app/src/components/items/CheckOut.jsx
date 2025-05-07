@@ -52,14 +52,14 @@ const CheckoutPage = () => {
       setSubmitting(true);
       const response = await axios.post(apiEndpoint, payload);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        console.log("Booking response:", response.data);
         setSuccess(true);   // ✅ Show success message
         setError("");       // ✅ Clear errors
         console.log("Booking successful:", response.data);
-
-        // ✅ Redirect after 3 seconds
         setTimeout(() => {
           navigate("/rentals");
+          console.log("Redirecting to rentals...");
         }, 3000);
       }
     } catch (err) {
