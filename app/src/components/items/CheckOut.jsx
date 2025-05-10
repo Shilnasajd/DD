@@ -27,6 +27,16 @@ const CheckoutPage = () => {
     setContactInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Calculate price based on booking type
+  const calculatePrice = () => {
+    const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
+    
+    if (isRangeBooking && selectedDates?.length) {
+      return priceValue * selectedDates.length;
+    }
+    return priceValue;
+  };
+
   const handleSubmit = async () => {
     const isRange = isRangeBooking;
 
@@ -54,8 +64,8 @@ const CheckoutPage = () => {
 
       if (response.status === 201) {
         console.log("Booking response:", response.data);
-        setSuccess(true);   // ✅ Show success message
-        setError("");       // ✅ Clear errors
+        setSuccess(true);
+        setError("");
         console.log("Booking successful:", response.data);
         setTimeout(() => {
           navigate("/rentals");
@@ -75,6 +85,10 @@ const CheckoutPage = () => {
     return <div className="text-center text-lg text-red-600">Product information is missing.</div>;
   }
 
+  const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
+  const subtotal = calculatePrice();
+  const total = subtotal;
+
   return (
     <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg relative">
       <div
@@ -89,19 +103,19 @@ const CheckoutPage = () => {
         <div className="space-y-6">
           <div className="space-y-3 text-gray-600">
             <p className="text-xl font-semibold text-gray-800">{`Pay DD CAMERAS`}</p>
-            <h1 className="text-3xl font-semibold text-gray-800">{product.price.split(" ")[0]}</h1>
+            <h1 className="text-3xl font-semibold text-gray-800">₹{total.toFixed(2)}</h1>
             <div className="flex justify-between">
               <span>{product.name}</span>
-              <span>{product.price.split(" ")[0]}</span>
+              <span>₹{priceValue.toFixed(2)} {isRangeBooking && selectedDates?.length > 1 && `× ${selectedDates.length} days`}</span>
             </div>
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>{product.price.split(" ")[0]}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             <hr />
             <div className="flex justify-between font-semibold mt-6 text-gray-800">
               <span>Total due</span>
-              <span>{product.price.split(" ")[0]}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
