@@ -30,10 +30,19 @@ const CheckoutPage = () => {
     setContactInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  const isFormComplete = () => {
+    return (
+      contactInfo.email &&
+      contactInfo.fullName &&
+      contactInfo.phoneNumber &&
+      contactInfo.country
+    );
+  };
+
   // Calculate price based on booking type
   const calculatePrice = () => {
     const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
-    
+
     if (isRangeBooking && selectedDates?.length) {
       return priceValue * selectedDates.length;
     }
@@ -52,9 +61,9 @@ const CheckoutPage = () => {
       ...(isRange
         ? { dates: selectedDates }
         : {
-            date: dayjs(selectedDate).format("YYYY-MM-DD"),
-            slot: selectedSlot?.id,
-          }),
+          date: dayjs(selectedDate).format("YYYY-MM-DD"),
+          slot: selectedSlot?.id,
+        }),
     };
 
     const apiEndpoint = isRange
@@ -220,18 +229,19 @@ const CheckoutPage = () => {
               {!termsAccepted ? (
                 <button
                   type="button"
-                  className="px-4 py-2 bg-black text-white rounded hover:opacity-90 transition"
-                  onClick={() => setShowTermsModal(true)}
+                  className={`px-4 py-2 rounded bg-black text-white hover:opacity-90 transition ${
+                    !isFormComplete() && "opacity-50 cursor-not-allowed"
+                  }`}
+                  onClick={() => isFormComplete() && setShowTermsModal(true)}
+                  disabled={!isFormComplete()}
                 >
                   Continue
-                </button>
-              ) : (
+                </button>) : (
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${
-                    submitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
                   {submitting ? (
                     <span className="flex items-center gap-2">
