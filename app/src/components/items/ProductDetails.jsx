@@ -153,13 +153,16 @@ const ProductDetails = () => {
           isRangeBooking: true
         },
       });
-    } else {
-      if (selectedSlot) {
-        // Call API for single date booking
-        navigate("/checkout", {
-          state: { product, selectedDate, selectedSlot },
-        });
+    }  else {
+      if (!selectedSlot) {
+        alert("Please select a time slot.");
+        return;
       }
+  
+      // Call API for single date booking
+      navigate("/checkout", {
+        state: { product, selectedDate, selectedSlot },
+      });
     }
   };
     
