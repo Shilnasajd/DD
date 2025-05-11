@@ -4,7 +4,10 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from .models import (
-    Slot, Product, Booking
+    Slot, 
+    Product, 
+    Booking,
+    TermsAndConditions
     )
 
 class SlotSerializer(serializers.ModelSerializer):
@@ -169,3 +172,8 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
                 print(f"Error sending admin email: {e}")
 
         return bookings
+
+class TermsAndConditionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsAndConditions
+        fields = '__all__'

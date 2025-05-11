@@ -32,3 +32,12 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.date} - {self.slot}"
+    
+class PromoCode(models.Model):
+    code = models.CharField(null=True)
+    amount = models.CharField(null=True)
+
+class TermsAndConditions(models.Model):
+    email = models.EmailField(null=True)
+    time = models.DateTimeField(auto_now_add=True)
+
