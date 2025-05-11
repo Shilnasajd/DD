@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import TermsAndConditionsModel from './TermsAndConditionsModel'; // Make sure to import your modal component
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -21,6 +22,8 @@ const CheckoutPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleContactInfoChange = (e) => {
     const { name, value } = e.target;
@@ -79,6 +82,11 @@ const CheckoutPage = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleTermsAccepted = () => {
+    setTermsAccepted(true);
+    setShowTermsModal(false);
   };
 
   if (!product) {
@@ -208,46 +216,64 @@ const CheckoutPage = () => {
               />
             </div>
 
-            <div className="flex justify-end mt-6">
-              <button
-                type="submit"
-                disabled={submitting}
-                className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${
-                  submitting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {submitting ? (
-                  <span className="flex items-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      ></path>
-                    </svg>
-                    Booking...
-                  </span>
-                ) : (
-                  "Book Now"
-                )}
-              </button>
+            <div className="flex justify-end mt-6 gap-4">
+              {!termsAccepted ? (
+                <button
+                  type="button"
+                  className="px-4 py-2 bg-black text-white rounded hover:opacity-90 transition"
+                  onClick={() => setShowTermsModal(true)}
+                >
+                  Continue
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${
+                    submitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {submitting ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        ></path>
+                      </svg>
+                      Booking...
+                    </span>
+                  ) : (
+                    "Book Now"
+                  )}
+                </button>
+              )}
             </div>
           </form>
         </div>
       </div>
+
+      {/* Terms and Conditions Modal */}
+      <TermsAndConditionsModel
+        open={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        email={contactInfo.email}
+        onAccept={handleTermsAccepted}
+      />
 
       {/* Fullscreen Loader Overlay */}
       {submitting && (
