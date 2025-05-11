@@ -9,7 +9,7 @@ const TermsAndConditionsModel = ({ open, onClose, email, onAccept }) => {
     if (accepted) {
       try {
         // Send a POST request to save terms
-        const response = await fetch('http://localhost:8000/api/save_terms/', {
+        const response = await fetch('https://dd-3ecg.onrender.com/api/save_terms/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
