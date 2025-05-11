@@ -42,7 +42,7 @@ const TermsAndConditionsModel = ({ open, onClose, email, onAccept }) => {
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Terms and Conditions</DialogTitle>
       <DialogContent>
-        <h3>Effective Date: [Insert Date]</h3>
+        <h3>Terms&Conditions</h3>
         <p>Welcome to DDCAMERAS. These Terms and Conditions ("Terms") govern your access to and use of our camera rental services through our website [www.yoursite.com] ("Site"). By accessing or using the Site and our services, you agree to be bound by these Terms.</p>
 
         <h4>1. Eligibility</h4>
