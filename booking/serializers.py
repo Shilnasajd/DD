@@ -28,7 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment']
+        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment', 'price']
 
     def validate(self, data):
         product = data['product']
@@ -68,6 +68,7 @@ class BookingSerializer(serializers.ModelSerializer):
                 'date': booking.date,
                 'slot': booking.slot,
                 'promocode': promocode,
+                'price': booking.price,
             }
 
             # Send promocode email to the customer
@@ -115,6 +116,7 @@ class BookingSerializer(serializers.ModelSerializer):
                 'product_name': booking.product.name,
                 'date': booking.date,
                 'slot': booking.slot,
+                'price': booking.price,
             }
 
             # Send email to customer
