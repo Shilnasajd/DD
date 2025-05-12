@@ -36,6 +36,7 @@ class Booking(models.Model):
 class PromoCode(models.Model):
     code = models.CharField(null=True)
     amount = models.CharField(null=True)
+    is_valid = models.BooleanField(default=True)
 
 class TermsAndConditions(models.Model):
     email = models.EmailField(null=True)

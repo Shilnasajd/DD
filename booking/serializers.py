@@ -183,4 +183,4 @@ class TermsAndConditionsSerializer(serializers.ModelSerializer):
 class PromoCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PromoCode
-        fields = ['amount']
+        fields = ['amount', 'is_valid']

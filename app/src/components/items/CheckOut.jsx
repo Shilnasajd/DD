@@ -28,7 +28,7 @@ const CheckoutPage = () => {
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
   const [discountedAmount, setDiscountedAmount] = useState(null);
-  
+
 
   const handleContactInfoChange = (e) => {
     const { name, value } = e.target;
@@ -48,38 +48,38 @@ const CheckoutPage = () => {
   // Calculate price based on booking type
   const calculatePrice = () => {
     const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
-    
+
     let finalPrice = priceValue;
-  
+
     if (isRangeBooking && selectedDates?.length) {
       finalPrice = priceValue * selectedDates.length;
     }
-  
+
     // Subtract the promo discount from the total
     const discountedPrice = finalPrice - discountedAmount;
-  
+
     return discountedPrice > 0 ? discountedPrice : 0; // Ensure price doesn't go below zero
   };
-  
+
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) return;
-  
+
     try {
       const response = await axios.get(`https://dd-3ecg.onrender.com/api/get_promo_amount/?code=${promoCode}`);
-      
-      if (response.data?.amount) {
+
+      if (response.data?.amount && response.data?.is_valid === true) {
         const promoAmount = parseFloat(response.data.amount);
         setDiscountedAmount(promoAmount);
         setPromoError("");
       } else {
-        setPromoError("Invalid promo code.");
+        setPromoError("Promo code expired.");
       }
     } catch (error) {
       console.error("Promo code validation error:", error);
       setPromoError("Failed to validate promo code.");
     }
   };
-  
+
   const handleSubmit = async () => {
     const isRange = isRangeBooking;
 
@@ -92,9 +92,9 @@ const CheckoutPage = () => {
       ...(isRange
         ? { dates: selectedDates }
         : {
-            date: dayjs(selectedDate).format("YYYY-MM-DD"),
-            slot: selectedSlot?.id,
-          }),
+          date: dayjs(selectedDate).format("YYYY-MM-DD"),
+          slot: selectedSlot?.id,
+        }),
     };
 
     const apiEndpoint = isRange
@@ -290,9 +290,8 @@ const CheckoutPage = () => {
               {!termsAccepted ? (
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded bg-black text-white hover:opacity-90 transition ${
-                    !isFormComplete() && "opacity-50 cursor-not-allowed"
-                  }`}
+                  className={`px-4 py-2 rounded bg-black text-white hover:opacity-90 transition ${!isFormComplete() && "opacity-50 cursor-not-allowed"
+                    }`}
                   onClick={() => isFormComplete() && setShowTermsModal(true)}
                   disabled={!isFormComplete()}
                 >
@@ -302,7 +301,7 @@ const CheckoutPage = () => {
                   type="submit"
                   disabled={submitting}
                   className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                    }`}
                 >
                   {submitting ? (
                     <span className="flex items-center gap-2">

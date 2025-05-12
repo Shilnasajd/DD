@@ -117,6 +117,8 @@ def get_promo_amount(request):
     try:
         promo = PromoCode.objects.get(code=code)
         serializer = PromoCodeSerializer(promo)
+        promo.is_valid = False
+        promo.save()
         return Response(serializer.data)
     except PromoCode.DoesNotExist:
         return Response({'error': 'Invalid promo code'}, status=status.HTTP_404_NOT_FOUND)
