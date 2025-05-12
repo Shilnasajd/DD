@@ -117,6 +117,10 @@ class BookingSerializer(serializers.ModelSerializer):
                 'date': booking.date,
                 'slot': booking.slot,
                 'price': booking.price,
+                'email': booking.email,
+                'comments': booking.comment,
+                'phone': booking.phone
+
             }
 
             # Send email to customer
@@ -203,6 +207,8 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
                 'product_name': booking.product.name,
                 'date': booking.date,
                 'slot': booking.slot,
+                'email': booking.email,
+                'comments': booking.comment
             }
 
             # ✔️ Send promocode email if it's the 5th, 10th, etc. booking for this email

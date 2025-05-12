@@ -65,7 +65,7 @@ const CheckoutPage = () => {
     if (!promoCode.trim()) return;
 
     try {
-      const response = await axios.get(`https://dd-3ecg.onrender.com/api/get_promo_amount/?code=${promoCode}`);
+      const response = await axios.get(`http://localhost:8000/api/get_promo_amount/?code=${promoCode}`);
 
       if (response.data?.amount && response.data?.is_valid === true) {
         const promoAmount = parseFloat(response.data.amount);
@@ -100,8 +100,8 @@ const CheckoutPage = () => {
     };
 
     const apiEndpoint = isRange
-      ? "https://dd-3ecg.onrender.com/api/book_multiple_dates/"
-      : "https://dd-3ecg.onrender.com/api/bookings/";
+      ? "http://localhost:8000/api/book_multiple_dates/"
+      : "http://localhost:8000/api/bookings/";
 
     try {
       setSubmitting(true);

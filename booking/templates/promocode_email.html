@@ -1,9 +1,22 @@
 <html>
-  <body>
-    <p>Dear {{ name }},</p>
-    <p>Thank you for booking with DD CAMERAS! As a token of appreciation, here is your exclusive promocode:</p>
-    <p><strong>{{ promocode }}</strong></p>
-    <p>Enjoy your next booking with us!</p>
-    <p>Best regards,<br>DD CAMERAS</p>
+  <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; color: #333;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="font-size: 16px;">Dear <strong>{{ name }}</strong>,</p>
+
+      <p style="font-size: 16px;">
+        Thank you for booking with <strong>DD CAMERAS</strong>! As a token of appreciation, here is your exclusive promocode:
+      </p>
+
+      <p style="font-size: 18px; font-weight: bold; color: #d9534f; background-color: #f2dede; padding: 10px; border-radius: 4px; text-align: center;">
+        {{ promocode }}
+      </p>
+
+      <p style="font-size: 16px;">Enjoy your next booking with us!</p>
+
+      <p style="font-size: 16px;">
+        Best regards,<br>
+        <strong>DD CAMERAS</strong>
+      </p>
+    </div>
   </body>
 </html>
