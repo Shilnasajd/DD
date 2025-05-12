@@ -82,6 +82,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = async () => {
     const isRange = isRangeBooking;
+    const totalDue = calculatePrice();
 
     const payload = {
       product: product?.product_id,
@@ -89,6 +90,7 @@ const CheckoutPage = () => {
       name: contactInfo.fullName,
       phone: contactInfo.phoneNumber,
       comment: contactInfo.comment,
+      price: totalDue,
       ...(isRange
         ? { dates: selectedDates }
         : {
