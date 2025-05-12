@@ -155,6 +155,7 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
     dates = serializers.ListField(
         child=serializers.DateField(), write_only=True
     )
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     def validate(self, data):
         product = data['product']
@@ -174,6 +175,9 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         dates = validated_data.pop('dates')
+        total_price = validated_data.pop('price')  # get the total price
+        per_date_price = total_price / len(dates)  # divide by number of dates
+
         bookings = []
 
         try:
@@ -187,6 +191,7 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         for index, date in enumerate(dates):
             validated_data['date'] = date
             validated_data['slot'] = default_slot
+            validated_data['price'] = per_date_price
 
             booking = Booking.objects.create(**validated_data)
             bookings.append(booking)
