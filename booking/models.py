@@ -27,7 +27,7 @@ class Booking(models.Model):
     name = models.CharField(max_length=50, null=True)
     email = models.EmailField(null=True)
     phone = models.CharField(max_length=15, null=True)
-    comment = models.CharField(max_length=255, null=True)
+    comment = models.CharField(max_length=255, null=True, blank=True)
 
 
     def __str__(self):

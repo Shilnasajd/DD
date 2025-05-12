@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import TermsAndConditionsModel from './TermsAndConditionsModel'; // Make sure to import your modal component
+import TermsAndConditionsModel from './TermsAndConditionsModel';
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -25,6 +25,11 @@ const CheckoutPage = () => {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [discountedAmount, setDiscountedAmount] = useState(null);
+  
+
   const handleContactInfoChange = (e) => {
     const { name, value } = e.target;
     setContactInfo((prev) => ({ ...prev, [name]: value }));
@@ -39,16 +44,42 @@ const CheckoutPage = () => {
     );
   };
 
+  const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
   // Calculate price based on booking type
   const calculatePrice = () => {
     const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
-
+    
+    let finalPrice = priceValue;
+  
     if (isRangeBooking && selectedDates?.length) {
-      return priceValue * selectedDates.length;
+      finalPrice = priceValue * selectedDates.length;
     }
-    return priceValue;
+  
+    // Subtract the promo discount from the total
+    const discountedPrice = finalPrice - discountedAmount;
+  
+    return discountedPrice > 0 ? discountedPrice : 0; // Ensure price doesn't go below zero
   };
-
+  
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+  
+    try {
+      const response = await axios.get(`https://dd-3ecg.onrender.com/api/get_promo_amount/?code=${promoCode}`);
+      
+      if (response.data?.amount) {
+        const promoAmount = parseFloat(response.data.amount);
+        setDiscountedAmount(promoAmount);
+        setPromoError("");
+      } else {
+        setPromoError("Invalid promo code.");
+      }
+    } catch (error) {
+      console.error("Promo code validation error:", error);
+      setPromoError("Failed to validate promo code.");
+    }
+  };
+  
   const handleSubmit = async () => {
     const isRange = isRangeBooking;
 
@@ -61,9 +92,9 @@ const CheckoutPage = () => {
       ...(isRange
         ? { dates: selectedDates }
         : {
-          date: dayjs(selectedDate).format("YYYY-MM-DD"),
-          slot: selectedSlot?.id,
-        }),
+            date: dayjs(selectedDate).format("YYYY-MM-DD"),
+            slot: selectedSlot?.id,
+          }),
     };
 
     const apiEndpoint = isRange
@@ -102,7 +133,6 @@ const CheckoutPage = () => {
     return <div className="text-center text-lg text-red-600">Product information is missing.</div>;
   }
 
-  const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
   const subtotal = calculatePrice();
   const total = subtotal;
 
@@ -123,12 +153,43 @@ const CheckoutPage = () => {
             <h1 className="text-3xl font-semibold text-gray-800">₹{total.toFixed(2)}</h1>
             <div className="flex justify-between">
               <span>{product.name}</span>
-              <span>₹{priceValue.toFixed(2)} {isRangeBooking && selectedDates?.length > 1 && `× ${selectedDates.length} days`}</span>
+              <span>
+                ₹{priceValue.toFixed(2)}{" "}
+                {isRangeBooking && selectedDates?.length > 1 && `× ${selectedDates.length} days`}
+              </span>
             </div>
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span>Subtotal</span>
               <span>₹{subtotal.toFixed(2)}</span>
+            </div> */}
+
+            {/* Promo Code */}
+            <div className="space-y-2 mt-4">
+              <label htmlFor="promoCode" className="block text-gray-700">Promo Code</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="promoCode"
+                  name="promoCode"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  className="w-full border border-gray-300 px-4 py-2 rounded-md"
+                  placeholder="Enter promo code"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromo}
+                  className="bg-black text-white px-4 py-2 rounded hover:opacity-90 transition"
+                >
+                  Apply
+                </button>
+              </div>
+              {promoError && <p className="text-sm text-red-600">{promoError}</p>}
+              {discountedAmount && (
+                <p className="text-sm text-green-600">Promo applied! amount: ₹{discountedAmount}</p>
+              )}
             </div>
+
             <hr />
             <div className="flex justify-between font-semibold mt-6 text-gray-800">
               <span>Total due</span>
@@ -241,7 +302,7 @@ const CheckoutPage = () => {
                   type="submit"
                   disabled={submitting}
                   className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  }`}
                 >
                   {submitting ? (
                     <span className="flex items-center gap-2">

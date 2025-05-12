@@ -3,6 +3,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import (
     Slot, 
     Product, 
@@ -86,14 +88,13 @@ class BookingSerializer(serializers.ModelSerializer):
 
         return booking
 
-from django.core.exceptions import ObjectDoesNotExist
 
 class MultipleDatesBookingSerializer(serializers.Serializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     email = serializers.EmailField()
     name = serializers.CharField(max_length=255)
     phone = serializers.CharField(max_length=20, required=False)
-    comment = serializers.CharField(max_length=255, required=False)
+    comment = serializers.CharField(max_length=255, required=False, allow_blank=True)
     dates = serializers.ListField(
         child=serializers.DateField(), write_only=True
     )
