@@ -9,14 +9,16 @@ from .models import (
     Slot,
     Product,
     Booking,
-    TermsAndConditions
+    TermsAndConditions,
+    PromoCode
     )
 from .serializers import (
     SlotSerializer,
     ProductSerializer,
     BookingSerializer,
     MultipleDatesBookingSerializer,
-    TermsAndConditionsSerializer
+    TermsAndConditionsSerializer,
+    PromoCodeSerializer
     )
 
 class SlotListCreateView(generics.ListCreateAPIView):
@@ -105,3 +107,16 @@ def save_terms(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def get_promo_amount(request):
+    code = request.GET.get('code')
+    if not code:
+        return Response({'error': 'Promo code is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        promo = PromoCode.objects.get(code=code)
+        serializer = PromoCodeSerializer(promo)
+        return Response(serializer.data)
+    except PromoCode.DoesNotExist:
+        return Response({'error': 'Invalid promo code'}, status=status.HTTP_404_NOT_FOUND)

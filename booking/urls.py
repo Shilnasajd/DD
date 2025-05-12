@@ -5,7 +5,8 @@ from .views import (
     BookingListCreateView,
     GetProductView,
     book_multiple_dates,
-    save_terms
+    save_terms,
+    get_promo_amount
 )
 
 urlpatterns = [
@@ -15,5 +16,6 @@ urlpatterns = [
     path('get_product/', GetProductView.as_view(), name='check-availability'),
     path('book_multiple_dates/', book_multiple_dates, name='book-multiple-dates'),
     path('save_terms/', save_terms, name='save_terms'),
+    path('get_promo_amount/', get_promo_amount, name='get_promo_amount'),
 
 ]

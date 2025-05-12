@@ -7,7 +7,8 @@ from .models import (
     Slot, 
     Product, 
     Booking,
-    TermsAndConditions
+    TermsAndConditions,
+    PromoCode
     )
 
 class SlotSerializer(serializers.ModelSerializer):
@@ -177,3 +178,8 @@ class TermsAndConditionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TermsAndConditions
         fields = '__all__'
+
+class PromoCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PromoCode
+        fields = ['amount']
