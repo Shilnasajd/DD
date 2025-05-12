@@ -160,11 +160,9 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         product = data['product']
         dates = data['dates']
 
-        # Validate product quantity
         if product.quantity <= 0:
             raise serializers.ValidationError("This product is out of stock.")
 
-        # Validate each date
         for date in dates:
             bookings_for_slot = Booking.objects.filter(product=product, date=date)
             booked_count = bookings_for_slot.count()
@@ -179,21 +177,22 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         bookings = []
 
         try:
-            # Get the default slot instance (if it exists)
-            default_slot = Slot.objects.get(id=1)  # Assuming '1' is the default slot
+            default_slot = Slot.objects.get(id=1)
         except ObjectDoesNotExist:
             raise serializers.ValidationError("Default slot not found.")
 
-        for date in dates:
-            validated_data['date'] = date
-            validated_data['slot'] = default_slot  # Assign the Slot instance
+        email = validated_data.get("email")
+        previous_booking_count = Booking.objects.filter(email=email).count()
 
-            # Create the booking
+        for index, date in enumerate(dates):
+            validated_data['date'] = date
+            validated_data['slot'] = default_slot
+
             booking = Booking.objects.create(**validated_data)
             bookings.append(booking)
 
-            # Send email to customer
-            customer_email = booking.email
+            current_booking_number = previous_booking_count + index + 1
+
             context = {
                 'name': booking.name,
                 'product_name': booking.product.name,
@@ -201,36 +200,60 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
                 'slot': booking.slot,
             }
 
-            # Send email to customer
+            # ✔️ Send promocode email if it's the 5th, 10th, etc. booking for this email
+            if current_booking_number % 5 == 0:
+                promocode = self.generate_promocode()
+                amount = self.generate_amount(current_booking_number)
+
+                # Save the promocode in the PromoCode table
+                PromoCode.objects.create(code=promocode, amount=amount, is_valid=True)
+
+                # Add promocode to email context
+                context['promocode'] = promocode
+
+                try:
+                    promo_html = render_to_string('promocode_email.html', context)
+                    promo_subject = 'Special Promocode for Your Booking - DD CAMERAS'
+                    promo_email = EmailMessage(
+                        promo_subject, promo_html, settings.DEFAULT_FROM_EMAIL, [email]
+                    )
+                    promo_email.content_subtype = 'html'
+                    promo_email.send(fail_silently=False)
+                except Exception as e:
+                    print(f"Error sending promocode email: {e}")
+
+            # ✔️ Send customer confirmation email
             try:
                 customer_html = render_to_string('customer_email.html', context)
                 customer_subject = 'Booking Confirmation - DD CAMERAS'
-                from_email = settings.DEFAULT_FROM_EMAIL
-                recipient_list = [customer_email]
-
-                customer_email_message = EmailMessage(
-                    customer_subject, customer_html, from_email, recipient_list
+                customer_email = EmailMessage(
+                    customer_subject, customer_html, settings.DEFAULT_FROM_EMAIL, [email]
                 )
-                customer_email_message.content_subtype = 'html'
-                customer_email_message.send(fail_silently=False)
+                customer_email.content_subtype = 'html'
+                customer_email.send(fail_silently=False)
             except Exception as e:
                 print(f"Error sending customer email: {e}")
 
-            # Send email to admin
+            # ✔️ Send admin alert email
             try:
                 admin_html = render_to_string('admin_email.html', context)
                 admin_subject = 'Booking Alert - DD CAMERAS'
-                admin_recipient = ['ddcameras12@gmail.com']
-
-                admin_email_message = EmailMessage(
-                    admin_subject, admin_html, from_email, admin_recipient
+                admin_email = EmailMessage(
+                    admin_subject, admin_html, settings.DEFAULT_FROM_EMAIL, ['ddcameras12@gmail.com']
                 )
-                admin_email_message.content_subtype = 'html'
-                admin_email_message.send(fail_silently=False)
+                admin_email.content_subtype = 'html'
+                admin_email.send(fail_silently=False)
             except Exception as e:
                 print(f"Error sending admin email: {e}")
 
         return bookings
+
+    def generate_promocode(self):
+        import random, string
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+    def generate_amount(self, order_count):
+        return '220' if order_count % 2 == 0 else '310'
 
 class TermsAndConditionsSerializer(serializers.ModelSerializer):
     class Meta:
