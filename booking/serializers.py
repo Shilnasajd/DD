@@ -4,6 +4,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.core.exceptions import ObjectDoesNotExist
+import random
+import string
 
 from .models import (
     Slot, 
@@ -48,17 +50,52 @@ class BookingSerializer(serializers.ModelSerializer):
         booking = Booking.objects.create(**validated_data)
 
         customer_email = booking.email
-        context = {
-            'name': booking.name,
-            'product_name': booking.product.name,
-            'date': booking.date,
-            'slot': booking.slot,
-        }
+        total_orders_for_email = Booking.objects.filter(email=customer_email).count()
 
-        # Send email to customer
+        promocode = None
+        # Check if this is the 5th, 10th, 15th, etc. order for this email
+        if total_orders_for_email % 5 == 0:
+            promocode = self.generate_promocode()
+            amount = self.generate_amount(total_orders_for_email)
+
+            # Create a PromoCode entry in the PromoCode table
+            self.create_promocode(promocode, amount)
+
+            # Add the promocode to the email context
+            context = {
+                'name': booking.name,
+                'product_name': booking.product.name,
+                'date': booking.date,
+                'slot': booking.slot,
+                'promocode': promocode,
+            }
+
+            # Send promocode email to the customer
+            self.send_promocode_email(booking.email, context)
+
+        # Send regular booking confirmation email to customer and admin
+        self.send_confirmation_emails(booking)
+
+        return booking
+
+    def generate_promocode(self):
+        """Generate a random promocode."""
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+    def generate_amount(self, order_count):
+        """Generate an amount alternately 220, 310 based on the order count."""
+        return '220' if order_count % 2 == 0 else '310'
+
+    def create_promocode(self, code, amount):
+        """Create a PromoCode entry in the database."""
+        promocode_entry = PromoCode(code=code, amount=amount, is_valid=True)
+        promocode_entry.save()
+
+    def send_promocode_email(self, customer_email, context):
+        """Send an email with the promocode to the customer."""
         try:
-            customer_html = render_to_string('customer_email.html', context)
-            customer_subject = 'Booking Confirmation - DD CAMERAS'
+            customer_html = render_to_string('promocode_email.html', context)
+            customer_subject = 'Special Promocode for Your Booking - DD CAMERAS'
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [customer_email]
 
@@ -68,11 +105,31 @@ class BookingSerializer(serializers.ModelSerializer):
             customer_email_message.content_subtype = 'html'
             customer_email_message.send(fail_silently=False)
         except Exception as e:
-            # Log the error or handle it accordingly
-            print(f"Error sending customer email: {e}")
+            print(f"Error sending promocode email: {e}")
 
-        # Send email to admin
+    def send_confirmation_emails(self, booking):
+        """Send confirmation emails to both customer and admin."""
         try:
+            context = {
+                'name': booking.name,
+                'product_name': booking.product.name,
+                'date': booking.date,
+                'slot': booking.slot,
+            }
+
+            # Send email to customer
+            customer_html = render_to_string('customer_email.html', context)
+            customer_subject = 'Booking Confirmation - DD CAMERAS'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [booking.email]
+
+            customer_email_message = EmailMessage(
+                customer_subject, customer_html, from_email, recipient_list
+            )
+            customer_email_message.content_subtype = 'html'
+            customer_email_message.send(fail_silently=False)
+
+            # Send email to admin
             admin_html = render_to_string('admin_email.html', context)
             admin_subject = 'Booking Alert - DD CAMERAS'
             admin_recipient = ['ddcameras12@gmail.com']
@@ -82,11 +139,9 @@ class BookingSerializer(serializers.ModelSerializer):
             )
             admin_email_message.content_subtype = 'html'
             admin_email_message.send(fail_silently=False)
-        except Exception as e:
-            # Log the error or handle it accordingly
-            print(f"Error sending admin email: {e}")
 
-        return booking
+        except Exception as e:
+            print(f"Error sending confirmation emails: {e}")
 
 
 class MultipleDatesBookingSerializer(serializers.Serializer):
