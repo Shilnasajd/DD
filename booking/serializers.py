@@ -156,17 +156,14 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     phone = serializers.CharField(max_length=20, required=False)
     comment = serializers.CharField(max_length=255, required=False, allow_blank=True)
-    
-    # 🔁 Rename `dates` to `date`
-    date = serializers.ListField(
+    dates = serializers.ListField(
         child=serializers.DateField(), write_only=True
     )
-    
     price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     def validate(self, data):
         product = data['product']
-        dates = data['date']  # updated to use `date`
+        dates = data['dates']
 
         if product.quantity <= 0:
             raise serializers.ValidationError("This product is out of stock.")
@@ -181,9 +178,9 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        dates = validated_data.pop('date')  # updated
-        total_price = validated_data.pop('price')
-        per_date_price = total_price / len(dates)
+        dates = validated_data.pop('dates')
+        total_price = validated_data.pop('price')  # total price
+        per_date_price = total_price / len(dates)  # price per date
 
         bookings = []
 
@@ -195,8 +192,7 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         email = validated_data.get("email")
         previous_booking_count = Booking.objects.filter(email=email).count()
 
-        # Send only one email after all bookings are created
-        for index, date in enumerate(dates):
+        for date in dates:
             validated_data['date'] = date
             validated_data['slot'] = default_slot
             validated_data['price'] = per_date_price
@@ -204,51 +200,59 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
             booking = Booking.objects.create(**validated_data)
             bookings.append(booking)
 
-        # Send single email after all bookings are done
+        # Use the first booking for common details
+        first_booking = bookings[0]
+
         context = {
-            'name': validated_data['name'],
-            'product_name': validated_data['product'].name,
-            'slot': default_slot,
-            'email': validated_data['email'],
-            'comments': validated_data.get('comment', ''),
+            'name': first_booking.name,
+            'product_name': first_booking.product.name,
+            'slot': first_booking.slot,
+            'email': first_booking.email,
+            'comments': first_booking.comment,
             'dates': dates,
             'total_price': total_price,
             'phone': validated_data.get('phone', ''),
         }
 
-        current_booking_number = previous_booking_count + len(dates)
-
-        # 🎁 Send promocode if applicable
-        if current_booking_number % 5 == 0:
+        # ✔️ Check for promocode
+        current_total_bookings = previous_booking_count + len(dates)
+        if current_total_bookings % 5 == 0:
             promocode = self.generate_promocode()
-            amount = self.generate_amount(current_booking_number)
+            amount = self.generate_amount(current_total_bookings)
+
             PromoCode.objects.create(code=promocode, amount=amount, is_valid=True)
             context['promocode'] = promocode
 
             try:
                 promo_html = render_to_string('promocode_email.html', context)
                 promo_subject = 'Special Promocode for Your Booking - DD CAMERAS'
-                promo_email = EmailMessage(promo_subject, promo_html, settings.DEFAULT_FROM_EMAIL, [email])
+                promo_email = EmailMessage(
+                    promo_subject, promo_html, settings.DEFAULT_FROM_EMAIL, [email]
+                )
                 promo_email.content_subtype = 'html'
                 promo_email.send(fail_silently=False)
             except Exception as e:
                 print(f"Error sending promocode email: {e}")
 
-        # ✅ Send customer confirmation email
+        # ✔️ Send customer email (once)
         try:
             customer_html = render_to_string('customer.html', context)
             customer_subject = 'Booking Confirmation - DD CAMERAS'
-            customer_email = EmailMessage(customer_subject, customer_html, settings.DEFAULT_FROM_EMAIL, [email])
+            customer_email = EmailMessage(
+                customer_subject, customer_html, settings.DEFAULT_FROM_EMAIL, [email]
+            )
             customer_email.content_subtype = 'html'
             customer_email.send(fail_silently=False)
         except Exception as e:
             print(f"Error sending customer email: {e}")
 
-        # ✅ Send admin email
+        # ✔️ Send admin email (once)
         try:
             admin_html = render_to_string('admin.html', context)
             admin_subject = 'Booking Alert - DD CAMERAS'
-            admin_email = EmailMessage(admin_subject, admin_html, settings.DEFAULT_FROM_EMAIL, ['ddcameras12@gmail.com'])
+            admin_email = EmailMessage(
+                admin_subject, admin_html, settings.DEFAULT_FROM_EMAIL, ['ddcameras12@gmail.com']
+            )
             admin_email.content_subtype = 'html'
             admin_email.send(fail_silently=False)
         except Exception as e:
