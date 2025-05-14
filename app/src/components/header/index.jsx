@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <>
       {/* Full Header */}
@@ -19,58 +19,58 @@ const navigate = useNavigate();
         {/* Main Header */}
         <div className="bg-white w-full flex items-center justify-between px-4 md:px-16 h-24">
           {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={()=>{navigate("/")}}>
+          <div className="flex items-center cursor-pointer" onClick={() => { navigate("/") }}>
             <img
               src="/imgs/logo/1-removebg-preview.png"
               alt="Company Logo"
-              style={{height: "180px", width: "180px"}}
-              // className="h-32 w-22 object-contain"
+              style={{ height: "180px", width: "180px" }}
+            // className="h-32 w-22 object-contain"
             />
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6 text-black font-semibold">
-  <NavLink
-    to="/"
-    className={({ isActive }) =>
-      `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
-    }
-  >
-    Home
-  </NavLink>
-  <NavLink
-    to="/rentals"
-    className={({ isActive }) =>
-      `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
-    }
-  >
-    Rentals
-  </NavLink>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/rentals"
+              className={({ isActive }) =>
+                `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+              }
+            >
+              Rentals
+            </NavLink>
 
-  {/* Social Icons */}
-  <div className="flex space-x-4 ml-4">
-    <a href="#">
-      <Icon icon="mdi:instagram" className="text-xl hover:text-gray-400" />
-    </a>
-    <a href="#">
-      <Icon icon="mdi:facebook" className="text-xl hover:text-gray-400" />
-    </a>
-    <a href="#">
-      <Icon icon="mdi:linkedin" className="text-xl hover:text-gray-400" />
-    </a>
-    <a href="#">
-      <Icon icon="line-md:twitter-x" className="text-xl hover:text-gray-400" />
-    </a>
-  </div>
+            {/* Social Icons */}
+            <div className="flex space-x-4 ml-4">
+              <a href="#">
+                <Icon icon="mdi:instagram" className="text-xl hover:text-gray-400" />
+              </a>
+              <a href="#">
+                <Icon icon="mdi:facebook" className="text-xl hover:text-gray-400" />
+              </a>
+              <a href="#">
+                <Icon icon="mdi:linkedin" className="text-xl hover:text-gray-400" />
+              </a>
+              <a href="#">
+                <Icon icon="line-md:twitter-x" className="text-xl hover:text-gray-400" />
+              </a>
+            </div>
 
-  {/* Shopping Bag */}
-  <Icon icon="mdi:shopping-outline" className="ml-4 text-xl hover:text-gray-400" />
+            {/* Shopping Bag */}
+            <Icon icon="mdi:shopping-outline" className="ml-4 text-xl hover:text-gray-400" />
 
-  {/* Button */}
-  <button className="bg-black text-white font-semibold py-2 px-4 rounded ml-4">
-    DD GRADE FILMS
-  </button>
-</div>
+            {/* Button */}
+            <button className="bg-black text-white font-semibold py-2 px-4 rounded ml-4">
+              DD GRADE FILMS
+            </button>
+          </div>
 
           {/* Mobile Icons */}
           <div className="flex md:hidden items-center space-x-4 text-black">
@@ -96,24 +96,29 @@ const navigate = useNavigate();
 
         {/* Mobile Menu */}
         <div
-          className={`bg-white text-black flex flex-col items-end space-y-4 py-4 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform ${
-            menuOpen
+          className={`bg-white text-black flex flex-col items-end space-y-4 py-4 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform ${menuOpen
               ? "scale-y-100 opacity-100"
               : "scale-y-0 opacity-0 pointer-events-none"
-          }`}
+            }`}
         >
-          <a
-            href="#"
-            className="hover:underline focus:underline active:underline underline-offset-4"
+          <NavLink
+            to="/"
+            onClick={() => setMenuOpen(false)}
+            className={({ isActive }) =>
+              `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+            }
           >
             Home
-          </a>
-          <a
-            href="#"
-            className="hover:underline focus:underline active:underline underline-offset-4"
+          </NavLink>
+          <NavLink
+            to="/rentals"
+            onClick={() => setMenuOpen(false)}
+            className={({ isActive }) =>
+              `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+            }
           >
             Rentals
-          </a>
+          </NavLink>
 
           <div className="flex space-x-4">
             <a href="#">

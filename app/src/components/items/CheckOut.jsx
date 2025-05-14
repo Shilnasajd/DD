@@ -100,8 +100,8 @@ const CheckoutPage = () => {
     };
 
     const apiEndpoint = isRange
-      ? "http://localhost:8000/api/book_multiple_dates/"
-      : "http://localhost:8000/api/bookings/";
+      ? "https://dd-3ecg.onrender.com/api/book_multiple_dates/"
+      : "https://dd-3ecg.onrender.com/api/bookings/";
 
     try {
       setSubmitting(true);
