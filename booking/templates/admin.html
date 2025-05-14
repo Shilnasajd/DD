@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Booking Alert</title>
+</head>
+<body>
+    <h2>New Booking Received</h2>
+
+    <h3>Customer Details:</h3>
+    <ul>
+        <li><strong>Name:</strong> {{ name }}</li>
+        <li><strong>Email:</strong> {{ email }}</li>
+        <li><strong>Phone:</strong> {{ phone }}</li>
+    </ul>
+
+    <h3>Booking Details:</h3>
+    <ul>
+        <li><strong>Product:</strong> {{ product_name }}</li>
+        <li><strong>Dates:</strong>
+            <ul>
+                {% for date in dates %}
+                    <li>{{ date }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li><strong>Total Price:</strong> ₹{{ total_price }}</li>
+        <li><strong>Slot:</strong> {{ slot }}</li>
+    </ul>
+
+    {% if comments %}
+        <p><strong>Customer Comment:</strong> {{ comments }}</p>
+    {% endif %}
+
+    <p>Check the admin panel for more details.</p>
+
+    <p>Regards,<br>
+    Booking System</p>
+</body>
+</html>

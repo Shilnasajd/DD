@@ -156,14 +156,17 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     phone = serializers.CharField(max_length=20, required=False)
     comment = serializers.CharField(max_length=255, required=False, allow_blank=True)
-    dates = serializers.ListField(
+    
+    # 🔁 Rename `dates` to `date`
+    date = serializers.ListField(
         child=serializers.DateField(), write_only=True
     )
+    
     price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     def validate(self, data):
         product = data['product']
-        dates = data['dates']
+        dates = data['date']  # updated to use `date`
 
         if product.quantity <= 0:
             raise serializers.ValidationError("This product is out of stock.")
@@ -178,9 +181,9 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        dates = validated_data.pop('dates')
-        total_price = validated_data.pop('price')  # get the total price
-        per_date_price = total_price / len(dates)  # divide by number of dates
+        dates = validated_data.pop('date')  # updated
+        total_price = validated_data.pop('price')
+        per_date_price = total_price / len(dates)
 
         bookings = []
 
@@ -192,6 +195,7 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         email = validated_data.get("email")
         previous_booking_count = Booking.objects.filter(email=email).count()
 
+        # Send only one email after all bookings are created
         for index, date in enumerate(dates):
             validated_data['date'] = date
             validated_data['slot'] = default_slot
@@ -200,62 +204,55 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
             booking = Booking.objects.create(**validated_data)
             bookings.append(booking)
 
-            current_booking_number = previous_booking_count + index + 1
+        # Send single email after all bookings are done
+        context = {
+            'name': validated_data['name'],
+            'product_name': validated_data['product'].name,
+            'slot': default_slot,
+            'email': validated_data['email'],
+            'comments': validated_data.get('comment', ''),
+            'dates': dates,
+            'total_price': total_price,
+            'phone': validated_data.get('phone', ''),
+        }
 
-            context = {
-                'name': booking.name,
-                'product_name': booking.product.name,
-                'date': booking.date,
-                'slot': booking.slot,
-                'email': booking.email,
-                'comments': booking.comment
-            }
+        current_booking_number = previous_booking_count + len(dates)
 
-            # ✔️ Send promocode email if it's the 5th, 10th, etc. booking for this email
-            if current_booking_number % 5 == 0:
-                promocode = self.generate_promocode()
-                amount = self.generate_amount(current_booking_number)
+        # 🎁 Send promocode if applicable
+        if current_booking_number % 5 == 0:
+            promocode = self.generate_promocode()
+            amount = self.generate_amount(current_booking_number)
+            PromoCode.objects.create(code=promocode, amount=amount, is_valid=True)
+            context['promocode'] = promocode
 
-                # Save the promocode in the PromoCode table
-                PromoCode.objects.create(code=promocode, amount=amount, is_valid=True)
-
-                # Add promocode to email context
-                context['promocode'] = promocode
-
-                try:
-                    promo_html = render_to_string('promocode_email.html', context)
-                    promo_subject = 'Special Promocode for Your Booking - DD CAMERAS'
-                    promo_email = EmailMessage(
-                        promo_subject, promo_html, settings.DEFAULT_FROM_EMAIL, [email]
-                    )
-                    promo_email.content_subtype = 'html'
-                    promo_email.send(fail_silently=False)
-                except Exception as e:
-                    print(f"Error sending promocode email: {e}")
-
-            # ✔️ Send customer confirmation email
             try:
-                customer_html = render_to_string('customer_email.html', context)
-                customer_subject = 'Booking Confirmation - DD CAMERAS'
-                customer_email = EmailMessage(
-                    customer_subject, customer_html, settings.DEFAULT_FROM_EMAIL, [email]
-                )
-                customer_email.content_subtype = 'html'
-                customer_email.send(fail_silently=False)
+                promo_html = render_to_string('promocode_email.html', context)
+                promo_subject = 'Special Promocode for Your Booking - DD CAMERAS'
+                promo_email = EmailMessage(promo_subject, promo_html, settings.DEFAULT_FROM_EMAIL, [email])
+                promo_email.content_subtype = 'html'
+                promo_email.send(fail_silently=False)
             except Exception as e:
-                print(f"Error sending customer email: {e}")
+                print(f"Error sending promocode email: {e}")
 
-            # ✔️ Send admin alert email
-            try:
-                admin_html = render_to_string('admin_email.html', context)
-                admin_subject = 'Booking Alert - DD CAMERAS'
-                admin_email = EmailMessage(
-                    admin_subject, admin_html, settings.DEFAULT_FROM_EMAIL, ['ddcameras12@gmail.com']
-                )
-                admin_email.content_subtype = 'html'
-                admin_email.send(fail_silently=False)
-            except Exception as e:
-                print(f"Error sending admin email: {e}")
+        # ✅ Send customer confirmation email
+        try:
+            customer_html = render_to_string('customer.html', context)
+            customer_subject = 'Booking Confirmation - DD CAMERAS'
+            customer_email = EmailMessage(customer_subject, customer_html, settings.DEFAULT_FROM_EMAIL, [email])
+            customer_email.content_subtype = 'html'
+            customer_email.send(fail_silently=False)
+        except Exception as e:
+            print(f"Error sending customer email: {e}")
+
+        # ✅ Send admin email
+        try:
+            admin_html = render_to_string('admin.html', context)
+            admin_subject = 'Booking Alert - DD CAMERAS'
+            admin_email = EmailMessage(admin_subject, admin_html, settings.DEFAULT_FROM_EMAIL, ['ddcameras12@gmail.com'])
+            admin_email.content_subtype = 'html'
+            admin_email.send(fail_silently=False)
+        except Exception as e:
+            print(f"Error sending admin email: {e}")
 
         return bookings
 
