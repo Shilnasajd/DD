@@ -1,108 +1,175 @@
 import React from "react";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/X"; // X is Twitter now
+import TwitterIcon from "@mui/icons-material/X"; // Twitter icon
 import { Icon } from "@iconify/react";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Typography, Link } from "@mui/material";
 import FooterEmailForm from "./FooterEmailForm";
 
 const Footer = () => {
   return (
     <Box
+      component="footer"
       sx={{
-        backgroundColor: "#4D4D4D",
-        color: "white",
-        width: "100%",
-        height: { xs: "auto", md: "18rem" }, 
-        px: { xs: 4, md: 14 },
-        py: 5,
+        backgroundColor: "#222",
+        color: "#eee",
+        py: 8,
+        px: { xs: 3, md: 10 },
+        textAlign: "center",
+        fontFamily: "'Roboto', sans-serif",
       }}
-     
     >
       <Grid
         container
-        spacing={4}
-        sx={{
-          height: "100%", // Make Grid fill the parent Box height
-        }}
+        spacing={6}
+        justifyContent="center"
+        alignItems="flex-start"
       >
-        {/* First Box - Always 50% */}
+        {/* Left Section */}
         <Grid
           item
-          sm={12}
-          md={6}
+          xs={12}
+          md={5}
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
-            minHeight: "100%",
-            width:{md:200}
+            alignItems: "center",
           }}
-          
         >
-          <Box >
-            <Typography variant="h4" fontWeight="bold">
-              Experience
-            </Typography>
-            <Typography variant="body1" mt={2} sx={{ maxWidth: 400 }}>
-              Expert team delivering stunning content production results.
-            </Typography>
-            <Box mt={3} display="flex" gap={2} alignItems="center">
-        <FacebookIcon sx={{ color: "white" }} />
-        <InstagramIcon sx={{ color: "white" }} />
-        <TwitterIcon sx={{ color: "white" }} />
-        <Icon
-                icon="ic:baseline-tiktok"
-                className="text-3xl hover:text-gray-400"
-              />
-      </Box>
-
+          <Typography
+            variant="h4"
+            fontWeight="700"
+            sx={{ mb: 2, letterSpacing: 1 }}
+          >
+            Experience
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              maxWidth: 420,
+              mb: 4,
+              color: "rgba(255, 255, 255, 0.75)",
+              lineHeight: 1.6,
+            }}
+          >
+            Expert team delivering stunning content production results.
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+              justifyContent: "center",
+              fontSize: 28,
+            }}
+          >
+            <FacebookIcon
+              sx={{
+                cursor: "pointer",
+                color: "#eee",
+                transition: "color 0.3s",
+                "&:hover": { color: "#3b5998" },
+              }}
+            />
+            <InstagramIcon
+              sx={{
+                cursor: "pointer",
+                color: "#eee",
+                transition: "color 0.3s",
+                "&:hover": { color: "#e4405f" },
+              }}
+            />
+            <TwitterIcon
+              sx={{
+                cursor: "pointer",
+                color: "#eee",
+                transition: "color 0.3s",
+                "&:hover": { color: "#1da1f2" },
+              }}
+            />
+            <Icon
+              icon="ic:baseline-tiktok"
+              style={{
+                cursor: "pointer",
+                color: "#eee",
+                fontSize: 28,
+                transition: "color 0.3s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#69C9D0")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#eee")}
+            />
           </Box>
-          <Typography variant="body1" mt={2}>
+          <Typography
+            variant="body2"
+            sx={{ mt: 5, color: "rgba(255,255,255,0.5)" }}
+          >
             © 2025. All rights reserved.
           </Typography>
         </Grid>
 
-        {/* Second Box - 25% */}
+        {/* Contact Section */}
         <Grid
           item
-          sm={12}
+          xs={12}
           md={3}
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
-            minHeight: "100%",
+            alignItems: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="bold">
+          <Typography
+            variant="h5"
+            fontWeight="700"
+            sx={{ mb: 3, letterSpacing: 0.7 }}
+          >
             Rental
           </Typography>
-          <Typography variant="body1" mt={2}>
+          <Typography
+            variant="body1"
+            sx={{ mb: 1, fontWeight: "medium" }}
+          >
+            Phone:
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 2 }}>
             +91 9562156703
           </Typography>
-          <Typography variant="body1" mt={0}>
-            dronedude@ddcameras.com
+          <Typography
+            variant="body1"
+            sx={{ mb: 1, fontWeight: "medium" }}
+          >
+            Email:
           </Typography>
+          <Link
+            href="mailto:dronedude@ddcameras.com"
+            underline="hover"
+            sx={{ color: "#90caf9" }}
+          >
+            dronedude@ddcameras.com
+          </Link>
         </Grid>
 
-        {/* Third Box - 25% */}
+        {/* Email Signup Section */}
         <Grid
           item
-          sm={12}
+          xs={12}
           md={3}
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
-            minHeight: "100%",
-            width:{md:300}
+            alignItems: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="bold">
+          <Typography
+            variant="h5"
+            fontWeight="700"
+            sx={{ mb: 3, letterSpacing: 0.7 }}
+          >
             Cameras
           </Typography>
-          <Typography variant="body1" mt={2}>
+          <Typography
+            variant="body2"
+            sx={{ mb: 2, color: "rgba(255,255,255,0.7)" }}
+          >
             Enter your email address
           </Typography>
           <FooterEmailForm />

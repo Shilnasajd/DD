@@ -30,6 +30,7 @@ const ProductDetails = () => {
   const [isOutOfStock, setIsOutOfStock] = useState(false);
   const [multiDateMode, setMultiDateMode] = useState(false);
   const [dateRangeAvailability, setDateRangeAvailability] = useState({});
+  const [cartCount, setCartCount] = useState(0);
 
   const fetchSlots = async () => {
     const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
@@ -225,7 +226,7 @@ const ProductDetails = () => {
           </p>
           <div className="flex gap-4">
             <button
-              className="bg-black text-white px-6 py-2 rounded hover:opacity-90 transition cursor-pointer"
+              className="bg-amber-500 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:bg-amber-600 transition-all duration-300"
               onClick={() => {
                 setIsOpen(true);
                 setMultiDateMode(false);
@@ -422,13 +423,13 @@ const ProductDetails = () => {
             <div className="flex justify-between mt-6">
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 text-black font-semibold py-3 px-8 rounded-full shadow-md hover:bg-amber-600 transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmBooking}
-                className="px-4 py-2 bg-black text-white rounded hover:opacity-90 transition"
+                className="bg-amber-500 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:bg-amber-600 transition-all duration-300"
               >
                 {multiDateMode ? "Book " : "Book"}
               </button>

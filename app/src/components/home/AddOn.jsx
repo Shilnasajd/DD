@@ -1,64 +1,83 @@
-import { Button, Grid } from "@mui/material";
 import React from "react";
+import { Button, Grid, Typography, Box } from "@mui/material";
 
 const AddOn = () => {
   return (
     <Grid
       container
-      spacing={2}
+      spacing={4}
       sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
+        mt: 8,
+        px: { xs: 2, md: 6 },
         justifyContent: "center",
         alignItems: "center",
-        mt: 6,
+        minHeight: { md: "420px" },
       }}
     >
-      {/* First Grid - 40% */}
+      {/* Left Section: Text */}
       <Grid
         item
         xs={12}
-        md={4}
+        md={5}
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
+          textAlign: { xs: "center", md: "left" },
         }}
         data-aos="fade-up"
       >
-        <h2 className="text-6xl font-semibold mb-4">Your Trusted Camera <br /> Rental Partner</h2>
-        <p className="text-lg font-light text-left max-w-md">
-        With over a decade of experience, we specialize in content production and camera rentals, ensuring exceptional results for all your photography and videography needs in Kerala.
-        </p>
-      
+        <Typography
+          variant="h3"
+          component="h2"
+          sx={{
+            fontWeight: 700,
+            mb: 3,
+            lineHeight: 1.1,
+            color: "primary.main",
+            letterSpacing: 1,
+          }}
+        >
+          Your Trusted Camera <br /> Rental Partner
+        </Typography>
+
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ fontWeight: 400, maxWidth: 520, mx: { xs: "auto", md: "unset" } }}
+        >
+          With over a decade of experience, we specialize in content production
+          and camera rentals, ensuring exceptional results for all your
+          photography and videography needs in Kerala.
+        </Typography>
       </Grid>
 
-      {/* Second Grid - 60% */}
+      {/* Right Section: Image */}
       <Grid
         item
         xs={12}
-        md={7}
+        md={6}
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
           justifyContent: "center",
           alignItems: "center",
-          gap: 2,
+          mt: { xs: 4, md: 0 },
         }}
-        data-aos="fade-up"  
+        data-aos="fade-up"
       >
-        <img
+        <Box
+          component="img"
           src="/imgs/4.avif"
           alt="About us"
-          style={{
+          sx={{
             width: "100%",
-            maxWidth: "380px",
-            height: "420px",
-            borderRadius: "20px",
+            maxWidth: 380,
+            height: 420,
+            borderRadius: 4,
+            boxShadow: 6,
+            objectFit: "cover",
           }}
         />
-
-       
       </Grid>
     </Grid>
   );

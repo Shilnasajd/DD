@@ -13,13 +13,13 @@ const Hero = () => {
         alignItems: "center",
         backgroundColor:"#4D4D4D",
         color:"white",
-        mt: 6,
+        mt: 2,
         padding: 4,
       }}
     >
       {/* First Grid - 40% */}
     
-        <h2 className="text-6xl font-semibold mb-4" data-aos="fade-up">Camera Rentals Made Easy</h2>
+        <center><h2 className="text-6xl font-semibold mb-4" data-aos="fade-up">Camera Rentals Made Easy</h2></center>
         <p className="text-lg font-light text-center max-w-md" data-aos="fade-up">
         Experience top-quality camera rentals with expert support for all your content production needs in Kerala.        </p>
       

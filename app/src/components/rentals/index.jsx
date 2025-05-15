@@ -18,9 +18,9 @@ const RentalsComponent = () => {
     <div className="relative z-20 bg-white text-black w-full pt-1">
     <Items/>
     </div>
-    <div className="relative z-20 bg-white text-black w-full pt-1">
+    {/* <div className="relative z-20 bg-white text-black w-full pt-1">
     <Reserve/>
-    </div>
+    </div> */}
 
       </>
   )

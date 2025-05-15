@@ -14,6 +14,10 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Itemdetails from './pages/itemdetails'
 import CheckoutPage from './components/items/CheckOut';
+import Contact from './components/home/ContactUs';
+import AboutUs from './components/home/AboutUs';
+import WeddingGallery from './components/home/gallery';
+
 function App() {
   AOS.init();
   return (  
@@ -24,6 +28,9 @@ function App() {
           <Route path="/rentals" element={<Rentals />} />
           <Route path="/:id" element={<Itemdetails />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/gallery" element={<WeddingGallery />} />
           {/* 
           <Route path="/product/:id" element={<ProductViewPage />} />
            */}

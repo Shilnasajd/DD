@@ -8,45 +8,57 @@ const Reserve = () => {
       spacing={2}
       sx={{
         display: "flex",
-        flexDirection: { xs: "column", md: "column" },
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#0D1B2B",
-        color: "white",
+        backgroundColor: "#0D1B2B", // same as homepage
+        color: "#ffffff",
         mt: 6,
-        padding: 4,
+        py: 8,
+        px: 2,
+        textAlign: "center",
       }}
     >
-      {/* First Grid - 40% */}
+      <h2
+        className="text-5xl md:text-6xl font-bold mb-6"
+        data-aos="fade-up"
+        style={{ color: "#D4AF37" }} // gold accent
+      >
+        Reserve Your Equipment
+      </h2>
 
-      <h2 className="text-6xl font-semibold mb-4" data-aos="fade-up">Reserve Your Equipment</h2>
-      <p className="text-lg font-light text-center max-w-md" data-aos="fade-up">
+      <p
+        className="text-lg font-light max-w-xl mb-6"
+        data-aos="fade-up"
+        style={{ color: "#ffffffcc" }} // semi-white for readability
+      >
         Book high-quality cameras and equipment easily online. Experience our
-        expert service and exceptional results.{" "}
+        expert service and exceptional results.
       </p>
 
       <Button
         type="submit"
         variant="contained"
-        color="primary"
-        fullWidth
+        fullWidth={false}
         sx={{
           mt: 2,
-          borderRadius: "20px",
-        //   backgroundColor: "#000",
-          width: "300px",
-        //   color: "#fff",
+          px: 5,
+          py: 1.5,
+          fontSize: "1rem",
+          fontWeight: "bold",
+          borderRadius: "30px",
+          backgroundColor: "#D4AF37",
+          color: "#0D1B2B",
+          textTransform: "none",
           "&:hover": {
-            backgroundColor: "#f0f0f0",
-            color: "#000",
+            backgroundColor: "#b9972d",
+            color: "#fff",
           },
         }}
-        data-aos="zoom-in"  
+        data-aos="zoom-in"
       >
-        Reserve
+        Reserve Now
       </Button>
-
-      {/* Second Grid - 60% */}
     </Grid>
   );
 };

@@ -139,7 +139,7 @@ const CheckoutPage = () => {
   const total = subtotal;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white shadow-lg rounded-lg relative">
+    <div className="p-6 max-w-5xl mx-auto bg-white  rounded-lg relative">
       <div
         className="flex items-center gap-2 mb-3 flex-row cursor-pointer"
         onClick={() => navigate(-1)}
@@ -147,198 +147,237 @@ const CheckoutPage = () => {
         <ArrowLeft /> Return to Home
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left: Product Details */}
-        <div className="space-y-6">
-          <div className="space-y-3 text-gray-600">
-            <p className="text-xl font-semibold text-gray-800">{`Pay DD CAMERAS`}</p>
-            <h1 className="text-3xl font-semibold text-gray-800">₹{total.toFixed(2)}</h1>
-            <div className="flex justify-between">
-              <span>{product.name}</span>
-              <span>
-                ₹{priceValue.toFixed(2)}{" "}
-                {isRangeBooking && selectedDates?.length > 1 && `× ${selectedDates.length} days`}
-              </span>
-            </div>
-            {/* <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>₹{subtotal.toFixed(2)}</span>
-            </div> */}
-
-            {/* Promo Code */}
-            <div className="space-y-2 mt-4">
-              <label htmlFor="promoCode" className="block text-gray-700">Promo Code</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  id="promoCode"
-                  name="promoCode"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                  placeholder="Enter promo code"
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyPromo}
-                  className="bg-black text-white px-4 py-2 rounded hover:opacity-90 transition"
-                >
-                  Apply
-                </button>
+      <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left: Booking Summary */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Booking Summary</h2>
+                <p className="text-gray-500">Pay DD CAMERAS</p>
               </div>
-              {promoError && <p className="text-sm text-red-600">{promoError}</p>}
-              {discountedAmount && (
-                <p className="text-sm text-green-600">Promo applied! amount: ₹{discountedAmount}</p>
-              )}
-            </div>
 
-            <hr />
-            <div className="flex justify-between font-semibold mt-6 text-gray-800">
-              <span>Total due</span>
-              <span>₹{total.toFixed(2)}</span>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center pb-4 border-b border-gray-200">
+                  <h3 className="text-3xl font-bold text-gray-900">₹{total.toFixed(2)}</h3>
+                  <span className="text-sm text-gray-500">Total</span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">{product.name}</span>
+                    <span className="font-medium">
+                      ₹{priceValue.toFixed(2)}
+                      {isRangeBooking && selectedDates?.length > 1 && (
+                        <span className="text-gray-500 ml-1">× {selectedDates.length} days</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Promo Code Section */}
+                <div className="pt-4">
+                  <div className="space-y-3">
+                    <label htmlFor="promoCode" className="block text-sm font-medium text-gray-700">
+                      Promo Code
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        id="promoCode"
+                        name="promoCode"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="flex-1 border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        placeholder="Enter promo code"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyPromo}
+                        className="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {promoError && (
+                      <p className="text-sm text-red-500 mt-1">{promoError}</p>
+                    )}
+                    {discountedAmount && (
+                      <p className="text-sm text-green-600 mt-1">
+                        Promo applied! Discount: ₹{discountedAmount}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex justify-between font-bold text-lg text-gray-900">
+                    <span>Total due</span>
+                    <span>₹{total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Contact Form */}
+          <div className="p-6">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Contact Information</h2>
+
+              {error && (
+                <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="p-3 bg-green-50 text-green-600 rounded-lg text-sm">
+                  Booking Successful! Redirecting to rentals...
+                </div>
+              )}
+
+              <form className="space-y-5" onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}>
+                <div className="space-y-5">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      value={contactInfo.email}
+                      onChange={handleContactInfoChange}
+                      placeholder="your.email@example.com"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      value={contactInfo.fullName}
+                      onChange={handleContactInfoChange}
+                      placeholder="John Doe"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                        Country
+                      </label>
+                      <select
+                        id="country"
+                        name="country"
+                        className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        value={contactInfo.country}
+                        onChange={handleContactInfoChange}
+                      >
+                        <option>India</option>
+                        <option>USA</option>
+                        <option>UK</option>
+                        <option>Canada</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        value={contactInfo.phoneNumber}
+                        onChange={handleContactInfoChange}
+                        placeholder="+91 9876543210"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+                      Additional Notes
+                    </label>
+                    <textarea
+                      id="comment"
+                      name="comment"
+                      rows={3}
+                      className="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      value={contactInfo.comment}
+                      onChange={handleContactInfoChange}
+                      placeholder="Special requests or instructions"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  {!termsAccepted ? (
+                    <button
+                      type="button"
+                      className={`w-full bg-amber-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-amber-600 transition-all duration-300 ${!isFormComplete() ? "opacity-50 cursor-not-allowed" : "hover:shadow-lg"
+                        }`}
+                      onClick={() => isFormComplete() && setShowTermsModal(true)}
+                      disabled={!isFormComplete()}
+                    >
+                      Continue
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className={`w-full bg-gray-900 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : "hover:shadow-lg"
+                        }`}
+                    >
+                      {submitting ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Processing Booking...
+                        </span>
+                      ) : (
+                        "Confirm Booking"
+                      )}
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
         </div>
-
-        {/* Right: Contact Form */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-semibold text-gray-800">Contact Information</h2>
-
-          {error && <div className="text-sm text-red-600">{error}</div>}
-          {success && (
-            <div className="text-sm text-green-600">
-              Booking Successful! Redirecting to rentals...
-            </div>
-          )}
-
-          <form
-            className="space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <div>
-              <label htmlFor="email" className="block text-gray-700">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                value={contactInfo.email}
-                onChange={handleContactInfoChange}
-                placeholder="Your email"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="fullName" className="block text-gray-700">Full Name</label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                value={contactInfo.fullName}
-                onChange={handleContactInfoChange}
-                placeholder="Your full name"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="country" className="block text-gray-700">Country</label>
-              <select
-                id="country"
-                name="country"
-                className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                value={contactInfo.country}
-                onChange={handleContactInfoChange}
-              >
-                <option>India</option>
-                <option>USA</option>
-                <option>UK</option>
-                <option>Canada</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="phoneNumber" className="block text-gray-700">Phone Number</label>
-              <input
-                type="tel"
-                id="phoneNumber"
-                name="phoneNumber"
-                className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                value={contactInfo.phoneNumber}
-                onChange={handleContactInfoChange}
-                placeholder="Your phone number"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="comment" className="block text-gray-700">Your Comment</label>
-              <textarea
-                id="comment"
-                name="comment"
-                className="w-full border border-gray-300 px-4 py-2 rounded-md"
-                value={contactInfo.comment}
-                onChange={handleContactInfoChange}
-                placeholder="Any additional comment"
-              />
-            </div>
-
-            <div className="flex justify-end mt-6 gap-4">
-              {!termsAccepted ? (
-                <button
-                  type="button"
-                  className={`px-4 py-2 rounded bg-black text-white hover:opacity-90 transition ${!isFormComplete() && "opacity-50 cursor-not-allowed"
-                    }`}
-                  onClick={() => isFormComplete() && setShowTermsModal(true)}
-                  disabled={!isFormComplete()}
-                >
-                  Continue
-                </button>) : (
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={`bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all ${submitting ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                >
-                  {submitting ? (
-                    <span className="flex items-center gap-2">
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        ></path>
-                      </svg>
-                      Booking...
-                    </span>
-                  ) : (
-                    "Book Now"
-                  )}
-                </button>
-              )}
-            </div>
-          </form>
-        </div>
       </div>
-
       {/* Terms and Conditions Modal */}
       <TermsAndConditionsModel
         open={showTermsModal}

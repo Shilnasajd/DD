@@ -1,94 +1,143 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate("/gallery");
+  };
+  
+
   return (
     <>
       {/* Full Header */}
-      <div className="w-full fixed top-0 left-0 z-30">
-        {/* Top Notification */}
-        <div className="bg-[#4D4D4D] text-white flex items-center justify-center w-full h-10">
-          <h1 className="text-sm font-bold">
-            EXCLUSIVE DISCOUNTS ON CAMERA RENTALS TODAY!
-          </h1>
+      <div className="w-full fixed top-0 left-0 z-50">
+        {/* Top Notification Bar */}
+        <div className="bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center w-full h-10">
+          <div className="flex items-center space-x-2">
+            <span className="animate-pulse">✨</span>
+            <h1 className="text-sm font-medium tracking-wider">
+              EXCLUSIVE DISCOUNTS ON CAMERA RENTALS TODAY!
+            </h1>
+            <span className="animate-pulse">✨</span>
+          </div>
         </div>
 
         {/* Main Header */}
-        <div className="bg-white w-full flex items-center justify-between px-4 md:px-16 h-24">
+        <div className="bg-amber-50 backdrop-blur-md w-full flex items-center justify-between px-4 md:px-16 h-24 border-b border-gray-100 shadow-sm">
           {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => { navigate("/") }}>
+          <div
+            className="flex items-center cursor-pointer transition-transform hover:scale-105"
+            onClick={() => navigate("/")}
+          >
             <img
               src="/imgs/logo/1-removebg-preview.png"
               alt="Company Logo"
-              style={{ height: "180px", width: "180px" }}
-            // className="h-32 w-22 object-contain"
+              className="h-50 w-50 object-contain"
             />
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6 text-black font-semibold">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
-              }
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/rentals"
-              className={({ isActive }) =>
-                `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
-              }
-            >
-              Rentals
-            </NavLink>
-
-            {/* Social Icons */}
-            <div className="flex space-x-4 ml-4">
-              <a href="#">
-                <Icon icon="mdi:instagram" className="text-xl hover:text-gray-400" />
-              </a>
-              <a href="#">
-                <Icon icon="mdi:facebook" className="text-xl hover:text-gray-400" />
-              </a>
-              <a href="#">
-                <Icon icon="mdi:linkedin" className="text-xl hover:text-gray-400" />
-              </a>
-              <a href="#">
-                <Icon icon="line-md:twitter-x" className="text-xl hover:text-gray-400" />
-              </a>
+          <div className="hidden md:flex items-center space-x-8">
+            <div className="flex items-center space-x-8 text-gray-800 font-medium">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                }
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/rentals"
+                className={({ isActive }) =>
+                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                }
+              >
+                Rental Store
+              </NavLink>
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                }
+              >
+                About
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                }
+              >
+                Contact
+              </NavLink>
             </div>
 
-            {/* Shopping Bag */}
-            <Icon icon="mdi:shopping-outline" className="ml-4 text-xl hover:text-gray-400" />
+            {/* Social Icons */}
+            <div className="flex space-x-5 ml-8 border-l border-gray-200 pl-8">
+              <a href="https://www.instagram.com/dd_grade/?hl=en" className="text-gray-500 hover:text-amber-600 transition-colors duration-300">
+                <Icon icon="mdi:instagram" className="text-xl" />
+              </a>
+              <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                <Icon icon="mdi:facebook" className="text-xl" />
+              </a>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <Icon
+                  icon="mdi:magnify"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"
+                />
+              </div>
+            </div>
+            {/* Shopping Cart with badge */}
+            <div className="relative ml-6">
+              <Icon
+                icon="mdi:shopping-outline"
+                className="text-2xl text-gray-700 hover:text-amber-600 transition-colors duration-300 cursor-pointer"
+              />
+              <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                3
+              </span>
+            </div>
 
-            {/* Button */}
-            <button className="bg-black text-white font-semibold py-2 px-4 rounded ml-4">
-              DD GRADE FILMS
-            </button>
-          </div>
+            {/* Premium Button */}
+    <button
+      onClick={handleRedirect}
+      className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
+    >
+      DD GRADE FILMS
+    </button>          </div>
 
           {/* Mobile Icons */}
-          <div className="flex md:hidden items-center space-x-4 text-black">
-            <Icon
-              icon="mdi:shopping-outline"
-              className="text-2xl hover:text-gray-400"
-            />
+          <div className="flex md:hidden items-center space-x-6">
+            <div className="relative">
+              <Icon
+                icon="mdi:shopping-outline"
+                className="text-2xl text-gray-700"
+              />
+              <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                3
+              </span>
+            </div>
             {menuOpen ? (
               <Icon
                 icon="mdi:close"
                 onClick={() => setMenuOpen(false)}
-                className="text-3xl cursor-pointer"
+                className="text-3xl cursor-pointer text-gray-700"
               />
             ) : (
               <Icon
                 icon="mdi:menu"
                 onClick={() => setMenuOpen(true)}
-                className="text-3xl cursor-pointer"
+                className="text-3xl cursor-pointer text-gray-700"
               />
             )}
           </div>
@@ -96,57 +145,71 @@ const Header = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`bg-white text-black flex flex-col items-end space-y-4 py-4 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform ${menuOpen
-              ? "scale-y-100 opacity-100"
-              : "scale-y-0 opacity-0 pointer-events-none"
+          className={`bg-white/95 backdrop-blur-lg w-full flex flex-col items-center space-y-6 py-6 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform border-b border-gray-100 shadow-lg ${menuOpen
+            ? "scale-y-100 opacity-100"
+            : "scale-y-0 opacity-0 h-0 overflow-hidden"
             }`}
         >
           <NavLink
             to="/"
-            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
-              `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
             }
+            onClick={() => setMenuOpen(false)}
           >
             Home
           </NavLink>
           <NavLink
             to="/rentals"
-            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
-              `${isActive ? 'underline underline-offset-4' : ''} hover:underline focus:underline active:underline`
+              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
             }
+            onClick={() => setMenuOpen(false)}
           >
-            Rentals
+            Rental Store
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
+            Contact
           </NavLink>
 
-          <div className="flex space-x-4">
-            <a href="#">
-              <Icon
-                icon="mdi:instagram"
-                className="text-xl hover:text-gray-400"
-              />
+          <div className="flex space-x-6 pt-4">
+            <a href="https://www.instagram.com/dd_grade/?hl=en" className="text-gray-500 hover:text-amber-600 transition-colors duration-300">
+              <Icon icon="mdi:instagram" className="text-2xl" />
             </a>
-            <a href="#">
-              <Icon
-                icon="mdi:facebook"
-                className="text-xl hover:text-gray-400"
-              />
+            <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors duration-300">
+              <Icon icon="mdi:facebook" className="text-2xl" />
             </a>
-            <a href="#">
-              <Icon
-                icon="mdi:linkedin"
-                className="text-xl hover:text-gray-400"
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 w-32 transition-all duration-300 hover:w-36"
               />
-            </a>
-            <a href="#">
               <Icon
-                icon="line-md:twitter-x"
-                className="text-xl hover:text-gray-400"
+                icon="mdi:magnify"
+                className="absolute right-2 text-gray-400 text-xl"
               />
-            </a>
+            </div>
           </div>
-          <button className="bg-black text-white font-semibold py-2 px-4 rounded">
+          <button
+            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-8 rounded-full mt-4 shadow-md hover:shadow-lg transition-all duration-300"
+            onClick={handleRedirect}
+          >
             DD GRADE FILMS
           </button>
         </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Card, Grid } from "@mui/material";
+import { Box, Button, Card, Grid, Typography } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as z from "zod";
 import FormikInput from "../fields/FormikInput";
@@ -11,7 +11,6 @@ const contactSchema = z.object({
   message: z.string().nonempty("Message is required"),
 });
 
-// Custom Zod validator for Formik
 const validateWithZod = (schema) => (values) => {
   const result = schema.safeParse(values);
   if (result.success) return {};
@@ -26,72 +25,73 @@ const GetInTouch = () => {
   return (
     <Box
       sx={{
-        position: "relative",
         backgroundImage: 'url("/imgs/3.avif")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        // borderRadius: "20px",
         minHeight: { xs: "100vh", md: "80vh" },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        px: { xs: 2, sm: 4 },
-        py: { xs: 4, md: 8 },
-        mt:3
+        px: { xs: 3, md: 6 },
+        py: { xs: 6, md: 10 },
+        mt: 3,
       }}
-   
     >
       <Grid
         container
-        spacing={2}
+        spacing={6}
         sx={{
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          borderRadius: "20px",
-          p: 4,
-          maxWidth: "1200px",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderRadius: "24px",
+          padding: { xs: 4, md: 6 },
+          maxWidth: 1100,
+          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
           margin: "0 auto",
-          boxShadow: 4,
         }}
       >
-        {/* First Grid - 40% */}
+        {/* Left Content */}
         <Grid
           item
           xs={12}
-          md={4}
+          md={5}
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            pr: { md: 4 },
           }}
-             data-aos="fade-up"
         >
-          <h2 className="text-5xl font-semibold mb-4 text-black">Get in Touch</h2>
-          <p className="text-lg font-light text-left max-w-md text-black">
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            Get in Touch
+          </Typography>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ maxWidth: 400, lineHeight: 1.6 }}
+          >
             Reach out to our expert team for inquiries about camera rentals and
             content production services.
-          </p>
+          </Typography>
         </Grid>
 
-        {/* Second Grid - 60% */}
+        {/* Form Side */}
         <Grid
           item
           xs={12}
           md={7}
           sx={{
             display: "flex",
-            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            gap: 2,
           }}
         >
           <Card
             sx={{
-              p: 3,
-              borderRadius: "20px",
-              backgroundColor: "#fff",
               width: "100%",
-              maxWidth: "500px",
+              maxWidth: 500,
+              borderRadius: "20px",
+              padding: 4,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
             }}
           >
             <Formik
@@ -116,17 +116,18 @@ const GetInTouch = () => {
                     variant="contained"
                     fullWidth
                     sx={{
-                      mt: 2,
-                      borderRadius: "20px",
-                      backgroundColor: "#000",
-                      color: "#fff",
+                      mt: 3,
+                      borderRadius: "12px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      fontSize: "1rem",
+                      backgroundColor: "#1976d2",
                       "&:hover": {
-                        backgroundColor: "#f0f0f0",
-                        color: "#000",
+                        backgroundColor: "#115293",
                       },
                     }}
                   >
-                    Submit your inquiry
+                    Submit Your Inquiry
                   </Button>
                 </Form>
               )}
