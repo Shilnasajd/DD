@@ -28,7 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment', 'price']
+        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment', 'price', 'status', 'booked_date']
 
     def validate(self, data):
         product = data['product']
@@ -276,3 +276,8 @@ class PromoCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PromoCode
         fields = ['amount', 'is_valid']
+
+class BookingStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['__all__']

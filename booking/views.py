@@ -4,6 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import UpdateAPIView
+from rest_framework.filters import SearchFilter
+
 
 from .models import (
     Slot,
@@ -18,7 +21,8 @@ from .serializers import (
     BookingSerializer,
     MultipleDatesBookingSerializer,
     TermsAndConditionsSerializer,
-    PromoCodeSerializer
+    PromoCodeSerializer,
+    BookingStatusUpdateSerializer
     )
 
 class SlotListCreateView(generics.ListCreateAPIView):
@@ -33,6 +37,11 @@ class BookingListCreateView(generics.ListCreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
+class BookingRetrieveView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    lookup_field = 'id' 
+    
 from datetime import datetime
 
 class GetProductView(APIView):
@@ -124,3 +133,13 @@ def get_promo_amount(request):
     
     except PromoCode.DoesNotExist:
         return Response({'error': 'Invalid promo code'}, status=status.HTTP_404_NOT_FOUND)
+    
+class UpdateBookingStatusAPIView(UpdateAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingStatusUpdateSerializer
+
+class ProductSearchAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name']

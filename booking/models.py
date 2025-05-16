@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
     
 class Slot(models.Model):
@@ -28,7 +29,8 @@ class Booking(models.Model):
     email = models.EmailField(null=True)
     phone = models.CharField(max_length=15, null=True)
     comment = models.CharField(max_length=255, null=True, blank=True)
-
+    status = models.CharField(default='Pending')
+    booked_date = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return f"{self.date} - {self.slot}"

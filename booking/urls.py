@@ -6,7 +6,10 @@ from .views import (
     GetProductView,
     book_multiple_dates,
     save_terms,
-    get_promo_amount
+    get_promo_amount,
+    BookingRetrieveView,
+    UpdateBookingStatusAPIView,
+    ProductSearchAPIView
 )
 
 urlpatterns = [
@@ -17,5 +20,8 @@ urlpatterns = [
     path('book_multiple_dates/', book_multiple_dates, name='book-multiple-dates'),
     path('save_terms/', save_terms, name='save_terms'),
     path('get_promo_amount/', get_promo_amount, name='get_promo_amount'),
+    path('bookings/<int:id>/', BookingRetrieveView.as_view(), name='booking-retrieve'),
+    path('bookings/<int:pk>/update-status/', UpdateBookingStatusAPIView.as_view(), name='update_booking_status'),
+    path('products/search/', ProductSearchAPIView.as_view(), name='product-search'),
 
 ]

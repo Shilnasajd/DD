@@ -8,6 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // Lazy load your components
 const HomePage = lazy(() => import('./pages/homepage'))
 const Rentals = lazy(() => import('./pages/rentals'))
+
 // const ProductViewPage = lazy(() => import('./pages/product-view'))
 // const CheckoutPage = lazy(() => import('./pages/checkout'))
 import AOS from 'aos';
@@ -17,6 +18,7 @@ import CheckoutPage from './components/items/CheckOut';
 import Contact from './components/home/ContactUs';
 import AboutUs from './components/home/AboutUs';
 import WeddingGallery from './components/home/gallery';
+import Admin from './pages/Admin';
 
 function App() {
   AOS.init();
@@ -31,6 +33,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/gallery" element={<WeddingGallery />} />
+          <Route path="/ddadmin" element={<Admin />} />
           {/* 
           <Route path="/product/:id" element={<ProductViewPage />} />
            */}
