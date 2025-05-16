@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
     const [bookings, setBookings] = useState([]);
+    const [groupedBookings, setGroupedBookings] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const Admin = () => {
         password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [selectedBookingGroup, setSelectedBookingGroup] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editStatus, setEditStatus] = useState('');
 
@@ -34,6 +35,9 @@ const Admin = () => {
         try {
             const response = await axios.get('http://localhost:8000/api/bookings/');
             setBookings(response.data);
+            // Group bookings by order_id
+            const grouped = groupBookingsByOrderId(response.data);
+            setGroupedBookings(grouped);
             setLoading(false);
         } catch (err) {
             setError(err.message);
@@ -41,14 +45,38 @@ const Admin = () => {
         }
     };
 
-    const fetchBookingDetails = async (id) => {
-        try {
-            const response = await axios.get(`http://localhost:8000/api/bookings/${id}`);
-            setSelectedBooking(response.data);
-            setEditStatus(response.data.status || 'Pending');
-        } catch (err) {
-            setError(err.message);
-        }
+    const groupBookingsByOrderId = (bookings) => {
+        const grouped = {};
+        bookings.forEach(booking => {
+            if (!booking.order_id) return; // Skip if no order_id
+            
+            if (!grouped[booking.order_id]) {
+                grouped[booking.order_id] = {
+                    orderId: booking.order_id,
+                    bookings: [],
+                    customerName: booking.name,
+                    customerEmail: booking.email,
+                    totalPrice: 0,
+                    status: 'Pending'
+                };
+            }
+            grouped[booking.order_id].bookings.push(booking);
+            grouped[booking.order_id].totalPrice += parseFloat(booking.price) || 0;
+            
+            // Set the most important status (e.g., if any booking is cancelled, mark the whole group)
+            if (booking.status === 'Cancelled') {
+                grouped[booking.order_id].status = 'Cancelled';
+            } else if (booking.status === 'Confirmed' && grouped[booking.order_id].status !== 'Cancelled') {
+                grouped[booking.order_id].status = 'Confirmed';
+            } else if (booking.status === 'Completed' && grouped[booking.order_id].status !== 'Cancelled' && grouped[booking.order_id].status !== 'Confirmed') {
+                grouped[booking.order_id].status = 'Completed';
+            }
+        });
+        return grouped;
+    };
+
+    const fetchBookingDetails = async (orderId) => {
+        setSelectedBookingGroup(groupedBookings[orderId]);
     };
 
     const handleLogin = async (e) => {
@@ -78,16 +106,29 @@ const Admin = () => {
         });
     };
 
-    const handleStatusUpdate = async () => {
+    const handleStatusUpdate = async (bookingId, newStatus) => {
         try {
-            await axios.patch(`http://localhost:8000/api/bookings/${selectedBooking.id}/update-status/`, {
-                status: editStatus
+            await axios.patch(`http://localhost:8000/api/bookings/${bookingId}/update-status/`, {
+                status: newStatus
             });
-            // Update the local bookings state
-            setBookings(bookings.map(booking => 
-                booking.id === selectedBooking.id ? {...booking, status: editStatus} : booking
+            // Refresh the bookings
+            fetchBookings();
+            setIsEditing(false);
+        } catch (err) {
+            setError('Failed to update status');
+        }
+    };
+
+    const handleGroupStatusUpdate = async () => {
+        try {
+            // Update all bookings in the group
+            await Promise.all(selectedBookingGroup.bookings.map(booking => 
+                axios.patch(`http://localhost:8000/api/bookings/${booking.id}/update-status/`, {
+                    status: editStatus
+                })
             ));
-            setSelectedBooking({...selectedBooking, status: editStatus});
+            // Refresh the bookings
+            fetchBookings();
             setIsEditing(false);
         } catch (err) {
             setError('Failed to update status');
@@ -224,10 +265,10 @@ const Admin = () => {
                             </div>
                         </div>
                     </div>
-                ) : selectedBooking ? (
+                ) : selectedBookingGroup ? (
                     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-6">
                         <button 
-                            onClick={() => setSelectedBooking(null)}
+                            onClick={() => setSelectedBookingGroup(null)}
                             className="mb-4 flex items-center text-amber-600 hover:text-amber-800"
                         >
                             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -242,41 +283,33 @@ const Admin = () => {
                                 <div className="space-y-4">
                                     <div>
                                         <p className="text-sm text-gray-500">Name</p>
-                                        <p className="font-medium">{selectedBooking.name}</p>
+                                        <p className="font-medium">{selectedBookingGroup.customerName}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Email</p>
-                                        <p className="font-medium">{selectedBooking.email}</p>
+                                        <p className="font-medium">{selectedBookingGroup.customerEmail}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Phone</p>
-                                        <p className="font-medium">{selectedBooking.phone || 'N/A'}</p>
+                                        <p className="font-medium">{selectedBookingGroup.bookings[0].phone || 'N/A'}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Comments</p>
-                                        <p className="font-medium">{selectedBooking.comment || 'No comments'}</p>
+                                        <p className="font-medium">{selectedBookingGroup.bookings[0].comment || 'No comments'}</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Booking Information</h3>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Information</h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <p className="text-sm text-gray-500">Date</p>
-                                        <p className="font-medium">{formatDate(selectedBooking.date)}</p>
+                                        <p className="text-sm text-gray-500">Order ID</p>
+                                        <p className="font-medium">{selectedBookingGroup.orderId}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-500">Time Slot</p>
-                                        <p className="font-medium">{getSlotName(selectedBooking.slot)}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500">Product ID</p>
-                                        <p className="font-medium">{selectedBooking.product}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500">Price</p>
-                                        <p className="font-medium">{selectedBooking.price ? `₹${selectedBooking.price}` : 'Not specified'}</p>
+                                        <p className="text-sm text-gray-500">Total Price</p>
+                                        <p className="font-medium">₹{selectedBookingGroup.totalPrice.toFixed(2)}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-500">Status</p>
@@ -293,7 +326,7 @@ const Admin = () => {
                                                     <option value="Completed">Completed</option>
                                                 </select>
                                                 <button
-                                                    onClick={handleStatusUpdate}
+                                                    onClick={handleGroupStatusUpdate}
                                                     className="bg-amber-500 text-white px-3 py-1 rounded hover:bg-amber-600"
                                                 >
                                                     Save
@@ -307,11 +340,14 @@ const Admin = () => {
                                             </div>
                                         ) : (
                                             <div className="flex items-center">
-                                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedBooking.status)}`}>
-                                                    {selectedBooking.status || 'Pending'}
+                                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedBookingGroup.status)}`}>
+                                                    {selectedBookingGroup.status || 'Pending'}
                                                 </span>
                                                 <button
-                                                    onClick={() => setIsEditing(true)}
+                                                    onClick={() => {
+                                                        setIsEditing(true);
+                                                        setEditStatus(selectedBookingGroup.status || 'Pending');
+                                                    }}
                                                     className="ml-2 text-amber-600 hover:text-amber-800 text-sm"
                                                 >
                                                     Edit
@@ -322,35 +358,69 @@ const Admin = () => {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="mt-8">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Bookings in this Order</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {selectedBookingGroup.bookings.map((booking) => (
+                                    <div key={booking.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h4 className="font-medium">Booking #{booking.id}</h4>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                                                {booking.status || 'Pending'}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                            <div>
+                                                <p className="text-gray-500">Date</p>
+                                                <p>{formatDate(booking.date)}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Slot</p>
+                                                <p>{getSlotName(booking.slot)}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Product</p>
+                                                <p>{booking.product}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500">Price</p>
+                                                <p>₹{booking.price || '0.00'}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {bookings.map((booking) => (
+                        {Object.values(groupedBookings).map((group) => (
                             <div 
-                                key={booking.id} 
-                                onClick={() => fetchBookingDetails(booking.id)}
+                                key={group.orderId} 
+                                onClick={() => fetchBookingDetails(group.orderId)}
                                 className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer"
                             >
                                 <div className="p-5">
                                     <div className="flex justify-between items-start mb-3">
-                                        <h3 className="text-lg font-semibold text-gray-800">Booking #{booking.id}</h3>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                                            {booking.status || 'Pending'}
+                                        <h3 className="text-lg font-semibold text-gray-800">Order #{group.orderId}</h3>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(group.status)}`}>
+                                            {group.status || 'Pending'}
                                         </span>
                                     </div>
-                                    <p className="text-gray-600 text-sm mb-2">Customer: {booking.name}</p>
-                                    <p className="text-gray-600 text-sm mb-3">Product ID: {booking.product}</p>
+                                    <p className="text-gray-600 text-sm mb-2">Customer: {group.customerName}</p>
+                                    <p className="text-gray-600 text-sm mb-3">Email: {group.customerEmail}</p>
                                     
                                     <div className="flex justify-between items-center mt-4">
                                         <div>
-                                            <p className="text-xs text-gray-500">Date</p>
+                                            <p className="text-xs text-gray-500">Bookings</p>
                                             <p className="text-sm font-medium">
-                                                {formatDate(booking.date)}
+                                                {group.bookings.length} {group.bookings.length > 1 ? 'items' : 'item'}
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-xs text-gray-500">Slot</p>
-                                            <p className="text-sm font-semibold">{getSlotName(booking.slot)}</p>
+                                            <p className="text-xs text-gray-500">Total</p>
+                                            <p className="text-sm font-semibold">₹{group.totalPrice.toFixed(2)}</p>
                                         </div>
                                     </div>
                                 </div>
