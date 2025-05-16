@@ -2,29 +2,171 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Booking Confirmation</title>
+    <title>Booking Confirmation | DD CAMERAS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .email-container {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+        .email-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .email-body {
+            padding: 30px;
+        }
+        h1, h2, h3 {
+            color: #111827;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 18px;
+            color: #1f2937;
+            margin-top: 25px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .booking-card {
+            background-color: #f8fafc;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .price-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #065f46;
+            background-color: #d1fae5;
+            padding: 10px 15px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .dates-list {
+            background-color: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #e5e7eb;
+        }
+        .dates-list li {
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .dates-list li:before {
+            content: "•";
+            color: #f59e0b;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .signature {
+            margin-top: 25px;
+            color: #374151;
+        }
+        .cta-button {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h2>Hi {{ name }},</h2>
-
-    <p>Thank you for your booking with <strong>DD CAMERAS</strong>!</p>
-
-    <h3>Booking Details:</h3>
-    <ul>
-        <li><strong>Product:</strong> {{ product_name }}</li>
-        <li><strong>Booked Dates:</strong>
-            <ul>
-                {% for date in dates %}
-                    <li>{{ date }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-        <li><strong>Total Price:</strong> ₹{{ total_price }}</li>
-    </ul>
-
-    <p>We look forward to seeing you soon!</p>
-
-    <p>Regards,<br>
-    DD CAMERAS Team</p>
+    <div class="email-container">
+        <div class="email-header">
+            <div class="logo-text">DD CAMERAS</div>
+            <div style="margin-top: 10px; font-size: 18px;">Booking Confirmation</div>
+        </div>
+        
+        <div class="email-body">
+            <h2>Hi {{ name }},</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">Thank you for choosing <strong>DD CAMERAS</strong> for your production needs. Your booking has been confirmed!</p>
+            
+            <h3>Your Booking Details</h3>
+            <div class="booking-card">
+                <ul style="list-style: none; padding-left: 0; margin: 0;">
+                    <li><strong>Product:</strong> {{ product_name }}</li>
+                    <li>
+                        <strong>Booked Dates:</strong>
+                        <div class="dates-list">
+                            <ul>
+                                {% for date in dates %}
+                                    <li>{{ date }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <strong>Total Amount:</strong>
+                        <div class="price-display">₹{{ total_price }}</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ calendar_link }}" class="cta-button">Add to Calendar</a>
+            </div>
+            
+            <p style="font-size: 16px; line-height: 1.6;">Our team is preparing your equipment and we look forward to serving you. Please don't hesitate to reach out if you have any questions about your upcoming rental.</p>
+            
+            <div class="signature">
+                <p style="margin-bottom: 5px;">Best regards,</p>
+                <p style="margin: 0; font-weight: 500;">The DD CAMERAS Team</p>
+            </div>
+            
+            <div class="footer">
+                <p style="margin: 5px 0;">DD CAMERAS • 123 Film District Avenue, Los Angeles, CA 90028</p>
+                <p style="margin: 5px 0;"><a href="tel:+13105551234" style="color: #3b82f6; text-decoration: none;">(310) 555-1234</a> • <a href="mailto:info@ddcameras.com" style="color: #3b82f6; text-decoration: none;">info@ddcameras.com</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

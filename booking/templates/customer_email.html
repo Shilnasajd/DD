@@ -2,38 +2,132 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Booking Confirmation</title>
+    <title>Booking Confirmation | DD CAMERAS</title>
 </head>
-<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding: 20px 0;">
+<body style="margin:0; padding:0; font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif; background-color:#f9f9f9;">
+    <!-- Main Container -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9; padding: 40px 0;">
         <tr>
             <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                    <tr style="background-color: #003366;">
-                        <td style="padding: 20px; color: #ffffff; text-align: center; font-size: 24px;">
-                            Booking Confirmation
+                <!-- Email Card -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #eeeeee;">
+                    <!-- Header with Gradient -->
+                    <tr style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                        <td style="padding: 30px 20px; text-align: center;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; padding-bottom: 10px;">
+                                        DD CAMERAS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 18px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);">
+                                        Booking Confirmed
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
+                    
+                    <!-- Body Content -->
                     <tr>
-                        <td style="padding: 30px;">
-                            <p style="font-size: 16px;">Dear <strong>{{ name }}</strong>,</p>
-
-                            <p style="font-size: 16px;">
-                                Your booking for <strong>{{ product_name }}</strong> on <strong>{{ date }}</strong> at slot <strong>{{ slot }}</strong> is confirmed.
+                        <td style="padding: 40px 30px;">
+                            <!-- Greeting -->
+                            <p style="font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; color: #333333;">
+                                Dear <strong style="color: #111827;">{{ name }}</strong>,
                             </p>
-
-                            <p style="font-size: 16px;">
-                                The total amount for your booking is <strong>₹{{ price }}</strong>.
+                            
+                            <!-- Confirmation Message -->
+                            <p style="font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; color: #333333;">
+                                Thank you for choosing <strong style="color: #111827;">DD CAMERAS</strong>! We're pleased to confirm your equipment booking.
                             </p>
-
-                            <p style="font-size: 16px;">Thank you for choosing <strong>DD CAMERAS</strong>!</p>
-
-                            <p style="font-size: 16px;">Regards,<br>DD CAMERAS Team</p>
+                            
+                            <!-- Booking Details Card -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; margin: 20px 0; padding: 20px;">
+                                <tr>
+                                    <td>
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <strong style="color: #111827; display: block; margin-bottom: 5px;">Product:</strong>
+                                                    <span style="color: #4b5563;">{{ product_name }}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <strong style="color: #111827; display: block; margin-bottom: 5px;">Booking Date:</strong>
+                                                    <span style="color: #4b5563;">{{ date }}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <strong style="color: #111827; display: block; margin-bottom: 5px;">Time Slot:</strong>
+                                                    <span style="color: #4b5563;">{{ slot }}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong style="color: #111827; display: block; margin-bottom: 5px;">Total Amount:</strong>
+                                                    <span style="display: inline-block; background-color: #d1fae5; color: #065f46; font-weight: bold; padding: 8px 12px; border-radius: 6px; margin-top: 5px;">
+                                                        ₹{{ price }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- CTA Button -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{{ calendar_link }}" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; text-decoration: none; font-weight: 500; padding: 14px 28px; border-radius: 8px; display: inline-block; text-align: center;">
+                                            Add to Calendar
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Closing Message -->
+                            <p style="font-size: 16px; line-height: 1.6; margin: 25px 0 0 0; color: #333333;">
+                                Our team is preparing your equipment for pickup. If you have any questions about your booking, please reply to this email.
+                            </p>
+                            
+                            <!-- Signature -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0 0 0;">
+                                <tr>
+                                    <td>
+                                        <p style="font-size: 16px; line-height: 1.6; margin: 0 0 5px 0; color: #333333;">
+                                            Best regards,
+                                        </p>
+                                        <p style="font-size: 16px; line-height: 1.6; margin: 0; font-weight: 500; color: #111827;">
+                                            The DD CAMERAS Team
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
-                    <tr style="background-color: #f0f0f0;">
-                        <td style="padding: 15px; text-align: center; font-size: 12px; color: #888;">
-                            © {{ date|date:"Y" }} DD CAMERAS. All rights reserved.
+                    
+                    <!-- Footer -->
+                    <tr style="background-color: #f8f8f8;">
+                        <td style="padding: 20px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #eeeeee;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="padding-bottom: 10px;">
+                                        <a href="https://ddcameras.com" style="color: #3b82f6; text-decoration: none;">Website</a> | 
+                                        <a href="tel:+13105551234" style="color: #3b82f6; text-decoration: none;">Contact Us</a> | 
+                                        <a href="mailto:info@ddcameras.com" style="color: #3b82f6; text-decoration: none;">Email</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        © {{ date|date:"Y" }} DD CAMERAS. All rights reserved.<br>
+                                        123 Film District Avenue, Los Angeles, CA 90028
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
