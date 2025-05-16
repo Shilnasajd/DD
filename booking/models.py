@@ -31,6 +31,7 @@ class Booking(models.Model):
     comment = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(default='Pending')
     booked_date = models.DateField(default=datetime.date.today)
+    order_id = models.CharField(null=True)
 
     def __str__(self):
         return f"{self.date} - {self.slot}"

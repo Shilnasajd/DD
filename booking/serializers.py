@@ -6,6 +6,8 @@ from django.core.mail import EmailMessage
 from django.core.exceptions import ObjectDoesNotExist
 import random
 import string
+import uuid
+
 
 from .models import (
     Slot, 
@@ -28,7 +30,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment', 'price', 'status', 'booked_date']
+        fields = ['id', 'date', 'slot', 'product', 'email', 'name', 'phone', 'comment', 'price', 'status', 'booked_date', 'order_id']
 
     def validate(self, data):
         product = data['product']
@@ -47,6 +49,8 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        unique_id = 'DD-' + uuid.uuid4().hex[:12] 
+        validated_data['order_id'] = unique_id
         booking = Booking.objects.create(**validated_data)
 
         customer_email = booking.email
@@ -68,7 +72,7 @@ class BookingSerializer(serializers.ModelSerializer):
                 'date': booking.date,
                 'slot': booking.slot,
                 'promocode': promocode,
-                'price': booking.price,
+                'price': booking.price
             }
 
             # Send promocode email to the customer
@@ -179,8 +183,8 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         dates = validated_data.pop('dates')
-        total_price = validated_data.pop('price')  # total price
-        per_date_price = total_price / len(dates)  # price per date
+        total_price = validated_data.pop('price')
+        per_date_price = total_price / len(dates)
 
         bookings = []
 
@@ -192,15 +196,19 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         email = validated_data.get("email")
         previous_booking_count = Booking.objects.filter(email=email).count()
 
+        # ✅ Generate a shared order_id for all bookings in this request
+        order_id = 'DD-' + uuid.uuid4().hex[:12]
+
         for date in dates:
             validated_data['date'] = date
             validated_data['slot'] = default_slot
             validated_data['price'] = per_date_price
+            validated_data['order_id'] = order_id  # ✅ assign shared order_id
 
             booking = Booking.objects.create(**validated_data)
             bookings.append(booking)
 
-        # Use the first booking for common details
+        # Use the first booking for common context
         first_booking = bookings[0]
 
         context = {
@@ -212,9 +220,10 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
             'dates': dates,
             'total_price': total_price,
             'phone': validated_data.get('phone', ''),
+            'order_id': order_id,  # ✅ Include order ID in email if needed
         }
 
-        # ✔️ Check for promocode
+        # 🔁 Promo logic...
         current_total_bookings = previous_booking_count + len(dates)
         if current_total_bookings % 5 == 0:
             promocode = self.generate_promocode()
@@ -234,7 +243,7 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
             except Exception as e:
                 print(f"Error sending promocode email: {e}")
 
-        # ✔️ Send customer email (once)
+        # 🔁 Customer and admin emails
         try:
             customer_html = render_to_string('customer.html', context)
             customer_subject = 'Booking Confirmation - DD CAMERAS'
@@ -246,7 +255,6 @@ class MultipleDatesBookingSerializer(serializers.Serializer):
         except Exception as e:
             print(f"Error sending customer email: {e}")
 
-        # ✔️ Send admin email (once)
         try:
             admin_html = render_to_string('admin.html', context)
             admin_subject = 'Booking Alert - DD CAMERAS'
