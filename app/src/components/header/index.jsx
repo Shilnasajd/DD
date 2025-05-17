@@ -266,7 +266,7 @@ const Header = () => {
               </div>
             </div>
             {/* Shopping Cart with badge */}
-            <div className="relative ml-6">
+            {/* <div className="relative ml-6">
               <Icon
                 icon="mdi:shopping-outline"
                 className="text-2xl text-gray-700 hover:text-amber-600 transition-colors duration-300 cursor-pointer"
@@ -274,7 +274,7 @@ const Header = () => {
               <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 3
               </span>
-            </div>
+            </div> */}
 
             {/* Premium Button */}
             <button
@@ -287,7 +287,7 @@ const Header = () => {
 
           {/* Mobile Icons */}
           <div className="flex md:hidden items-center space-x-6">
-            <div className="relative">
+            {/* <div className="relative">
               <Icon
                 icon="mdi:shopping-outline"
                 className="text-2xl text-gray-700"
@@ -295,7 +295,7 @@ const Header = () => {
               <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
                 3
               </span>
-            </div>
+            </div> */}
             {menuOpen ? (
               <Icon
                 icon="mdi:close"
