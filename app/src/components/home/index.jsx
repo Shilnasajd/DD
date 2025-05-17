@@ -63,7 +63,7 @@ const HomePage = () => {
                 description: "Backed by filmmakers, photographers, and creators across the country."
               }
             ].map((item, index) => (
-              <div key={index} className="p-6 bg-amber-50 rounded-xl shadow">
+              <div key={index} className="p-6 bg-white rounded-xl shadow">
                 <Icon icon={item.icon} className="text-4xl text-amber-600 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>
@@ -83,7 +83,7 @@ const HomePage = () => {
             { step: "3", title: "Pickup or Delivery", icon: "mdi:truck-outline" },
             { step: "4", title: "Shoot & Return", icon: "mdi:check-circle-outline" }
           ].map((item, i) => (
-            <div key={i} className="p-6 border rounded-xl shadow-sm bg-amber-50">
+            <div key={i} className="p-6 border rounded-xl shadow-sm bg-grey-500">
               <Icon icon={item.icon} className="text-amber-600 text-4xl mb-4" />
               <h4 className="text-xl font-semibold">{item.title}</h4>
             </div>
@@ -178,7 +178,7 @@ const HomePage = () => {
                 answer: "Absolutely. We offer flexible durations — from one-day rentals to long-term bookings."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-amber-50 p-5 rounded-xl shadow">
+              <div key={index} className="bg-white p-5 rounded-xl shadow">
                 <h4 className="font-semibold text-lg">{faq.question}</h4>
                 <p className="text-gray-600 mt-2">{faq.answer}</p>
               </div>
