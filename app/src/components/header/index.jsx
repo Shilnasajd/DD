@@ -121,7 +121,7 @@ const Header = () => {
             <img
               src="/imgs/logo/1-removebg-preview.png"
               alt="Company Logo"
-              className="h-20 w-20 sm:h-50 sm:w-50 object-contain"
+              className="h-40 w-40 sm:h-50 sm:w-50 object-contain"
             />
           </div>
 
