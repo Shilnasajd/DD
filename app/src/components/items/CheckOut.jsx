@@ -139,40 +139,96 @@ const CheckoutPage = () => {
   const total = subtotal;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white  rounded-lg relative">
+    <div className="p-6 max-w-5xl mx-auto bg-white rounded-lg relative">
       <div
-        className="flex items-center gap-2 mb-3 flex-row cursor-pointer"
+        className="flex items-center gap-2 mb-3 flex-row cursor-pointer text-gray-600 hover:text-gray-900 transition-colors"
         onClick={() => navigate(-1)}
       >
-        <ArrowLeft /> Return to Home
+        <ArrowLeft size={18} /> Return to Home
       </div>
 
-      <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+      <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left: Booking Summary */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">Booking Summary</h2>
-                <p className="text-gray-500">Pay DD CAMERAS</p>
+          {/* Enhanced Left: Booking Summary */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl border border-gray-200 shadow-sm">
+            <div className="space-y-8">
+              <div className="pb-4 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Summary</h2>
+                <p className="text-gray-500 text-sm">Review your order details</p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-                  <h3 className="text-3xl font-bold text-gray-900">₹{total.toFixed(2)}</h3>
-                  <span className="text-sm text-gray-500">Total</span>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-700">{product.name}</span>
-                    <span className="font-medium">
+              <div className="space-y-6">
+                {/* Product Card */}
+                <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-100 shadow-xs">
+                  <div className="w-16 h-16 bg-gray-200 rounded-md overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900">{product.name}</h3>
+                    <div className="mt-1 text-sm text-gray-500">
+                      {isRangeBooking ? (
+                        <span>{selectedDates.length} day{selectedDates.length > 1 ? 's' : ''}</span>
+                      ) : (
+                        <span>{dayjs(selectedDate).format('MMM D, YYYY')} • {selectedSlot?.time}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium text-gray-900">
                       ₹{priceValue.toFixed(2)}
                       {isRangeBooking && selectedDates?.length > 1 && (
-                        <span className="text-gray-500 ml-1">× {selectedDates.length} days</span>
+                        <span className="text-gray-500 text-xs ml-1"></span>
                       )}
-                    </span>
+                    </div>
                   </div>
+                </div>
+
+                {/* Pricing Breakdown */}
+                <div className="space-y-3">
+
+
+                  {isRangeBooking ? (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Dates</span>
+                        <span className="font-medium text-right">
+                          {selectedDates.map((date, index) => (
+                            <div key={index}>
+                              {dayjs(date).format('MMM D, YYYY')}
+                            </div>
+                          ))}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm border-t border-gray-100 pt-2">
+                        <span className="text-gray-600">Total Days</span>
+                        <span className="font-medium">{selectedDates.length} days</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Date</span>
+                      <span className="font-medium">
+                        {dayjs(selectedDate).format('MMM D, YYYY')}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="font-medium">
+                      ₹{(priceValue * selectedDates.length).toFixed(2)} ({priceValue.toFixed(2)} × {selectedDates.length})
+                    </span>
+
+                  </div>
+                  {discountedAmount && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Discount</span>
+                      <span className="text-green-600 font-medium">-₹{discountedAmount.toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Promo Code Section */}
@@ -188,32 +244,31 @@ const CheckoutPage = () => {
                         name="promoCode"
                         value={promoCode}
                         onChange={(e) => setPromoCode(e.target.value)}
-                        className="flex-1 border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        className="flex-1 border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                         placeholder="Enter promo code"
                       />
                       <button
                         type="button"
                         onClick={handleApplyPromo}
-                        className="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
+                        className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 text-sm font-medium"
                       >
                         Apply
                       </button>
                     </div>
                     {promoError && (
-                      <p className="text-sm text-red-500 mt-1">{promoError}</p>
-                    )}
-                    {discountedAmount && (
-                      <p className="text-sm text-green-600 mt-1">
-                        Promo applied! Discount: ₹{discountedAmount}
-                      </p>
+                      <p className="text-xs text-red-500 mt-1">{promoError}</p>
                     )}
                   </div>
                 </div>
 
+                {/* Total Section */}
                 <div className="pt-4 border-t border-gray-200">
-                  <div className="flex justify-between font-bold text-lg text-gray-900">
-                    <span>Total due</span>
-                    <span>₹{total.toFixed(2)}</span>
+                  <div className="flex justify-between items-center py-3">
+                    <span className="text-gray-700 font-medium">Total</span>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-900">₹{total.toFixed(2)}</div>
+                      <div className="text-xs text-gray-500 mt-1">including all taxes</div>
+                    </div>
                   </div>
                 </div>
               </div>
