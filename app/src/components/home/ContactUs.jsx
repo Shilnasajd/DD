@@ -87,7 +87,7 @@ const Contact = () => {
                   Main: <a href="tel:3105551234" className="hover:text-amber-600 transition-colors">(310) 555-1234</a><br />
                   Support: <a href="tel:3105555678" className="hover:text-amber-600 transition-colors">(310) 555-5678</a>
                 </p>
-                <p className="text-sm text-gray-500 mt-2">Mon-Fri: 9am-6pm PST</p>
+                <p className="text-sm text-gray-500 mt-2">Everyday: 9am-9pm PST</p>
               </div>
             </div>
 
