@@ -98,7 +98,7 @@ const Header = () => {
           <div className="flex items-center space-x-2">
             <span className="animate-pulse">✨</span>
             <h1 className="text-sm font-medium tracking-wider">
-              EXCLUSIVE DISCOUNTS ON CAMERA RENTALS TODAY!
+              EXCLUSIVE DISCOUNTS ON CAMERA RENTALS!
             </h1>
             <span className="animate-pulse">✨</span>
           </div>

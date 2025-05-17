@@ -12,7 +12,7 @@ const Contact = () => {
         {/* Hero Section */}
         <div className="text-center mb-20">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 -mt-10">Get In Touch</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-30">
             Have questions about our equipment or services? We're here to help.
           </p>
         </div>

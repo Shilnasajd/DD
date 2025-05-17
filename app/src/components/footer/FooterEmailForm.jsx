@@ -51,13 +51,15 @@ const FooterEmailForm = () => {
               className="text-red-500 mt-1 text-sm"
             />
           </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
-          >
-            Submit your request now
-          </button>
+<div className="flex justify-center">
+  <button
+    type="submit"
+    disabled={isSubmitting}
+    className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
+  >
+    Submit your request now
+  </button>
+</div>
         </Form>
       )}
     </Formik>

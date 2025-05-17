@@ -11,7 +11,7 @@ const Hero = () => {
         flexDirection: { xs: "column", md: "column" },
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor:"#4D4D4D",
+        backgroundColor:"black",
         color:"white",
         mt: 2,
         padding: 4,

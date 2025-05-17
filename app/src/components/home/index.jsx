@@ -63,7 +63,7 @@ const HomePage = () => {
                 description: "Backed by filmmakers, photographers, and creators across the country."
               }
             ].map((item, index) => (
-              <div key={index} className="p-6 bg-white rounded-xl shadow">
+              <div key={index} className="p-6 bg-amber-50 rounded-xl shadow">
                 <Icon icon={item.icon} className="text-4xl text-amber-600 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>
@@ -83,7 +83,7 @@ const HomePage = () => {
             { step: "3", title: "Pickup or Delivery", icon: "mdi:truck-outline" },
             { step: "4", title: "Shoot & Return", icon: "mdi:check-circle-outline" }
           ].map((item, i) => (
-            <div key={i} className="p-6 border rounded-xl shadow-sm">
+            <div key={i} className="p-6 border rounded-xl shadow-sm bg-amber-50">
               <Icon icon={item.icon} className="text-amber-600 text-4xl mb-4" />
               <h4 className="text-xl font-semibold">{item.title}</h4>
             </div>
@@ -100,12 +100,12 @@ const HomePage = () => {
               {
                 title: "Short Film - “Eclipse”",
                 description: "Used our RED Komodo camera kit with Zeiss CP.3 lenses.",
-                image: "/imgs/1.avif"
+                image: "/imgs/Eclipse.png"
               },
               {
                 title: "Ad Campaign - “Streetwear Vibes”",
                 description: "Captured dynamic product shots with our Sony FX6 setup.",
-                image: "/imgs/1.avif"
+                image: "/imgs/add.png"
               },
               {
                 title: "Music Video - “Lost in Light”",
@@ -113,8 +113,8 @@ const HomePage = () => {
                 image: "/imgs/1.avif"
               }
             ].map((project, index) => (
-              <div key={index} className="bg-white shadow rounded-lg overflow-hidden">
-                <img src={project.image} alt={project.title} className="w-full h-48 object-cover" />
+              <div key={index} className="bg-amber-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">
+                <img src={project.image} alt={project.title} className="w-full h-48 object-contain mt-8" />
                 <div className="p-4">
                   <h4 className="font-bold text-lg mb-1">{project.title}</h4>
                   <p className="text-gray-600">{project.description}</p>
@@ -131,26 +131,26 @@ const HomePage = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {[
             {
-              name: "Emily R.",
+              name: "Wedding Junction.",
               text: "The gear was fantastic and the service even better. Made our shoot seamless!",
-              img: "/imgs/users/emily.jpg"
+              img: "/imgs/wj.jpg"
             },
             {
-              name: "Ravi M.",
+              name: "Reelman Productions.",
               text: "Quick delivery, quality equipment, and reasonable pricing. Will book again!",
-              img: "/imgs/users/ravi.png"
+              img: "/imgs/rm.jpg"
             },
             {
-              name: "Lena G.",
+              name: "Muneer.",
               text: "Supportive team and top-tier rentals. We shot our indie short using their RED kit!",
-              img: "/imgs/users/lena.jpg"
+              img: "/imgs/muneer.jpg"
             }
           ].map((review, index) => (
             <div key={index} className="bg-amber-50 p-6 shadow rounded-xl">
               <img
                 src={review.img}
                 alt={review.name}
-                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
+                className="w-20 h-20 rounded-full mx-auto mb-4 object-contain"
               />
               <p className="italic text-gray-700 mb-2">"{review.text}"</p>
               <h4 className="font-semibold">{review.name}</h4>
@@ -178,7 +178,7 @@ const HomePage = () => {
                 answer: "Absolutely. We offer flexible durations — from one-day rentals to long-term bookings."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white p-5 rounded-xl shadow">
+              <div key={index} className="bg-amber-50 p-5 rounded-xl shadow">
                 <h4 className="font-semibold text-lg">{faq.question}</h4>
                 <p className="text-gray-600 mt-2">{faq.answer}</p>
               </div>

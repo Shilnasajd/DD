@@ -31,12 +31,14 @@ const AboutUs = () => {
               <p className="text-gray-600 mb-8 leading-relaxed">
                 We pride ourselves on maintaining an extensive inventory of the latest cameras, lenses, and accessories, all meticulously maintained by our team of certified technicians.
               </p>
-              <NavLink
-                to="/rentals"
-                className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-8 rounded-full inline-block shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                Browse Our Gear
-              </NavLink>
+              <div className="flex justify-center">
+                <NavLink
+                  to="/rentals"
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-8 rounded-full inline-block shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                  Browse Our Gear
+                </NavLink>
+              </div>
             </div>
             <div className="relative h-96 rounded-xl overflow-hidden shadow-xl">
               <img
