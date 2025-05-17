@@ -17,7 +17,7 @@ const HomePage = () => {
           className="w-full h-full object-cover opacity-70"
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Capture the Moment with Premium Equipment</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">Capture the Moment with Premium Equipments</h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl">
             Rent professional-grade cameras and equipment for your next big shoot.
           </p>
