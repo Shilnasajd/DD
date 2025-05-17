@@ -264,11 +264,10 @@ const Header = () => {
         {/* Mobile Menu */}
         <div
           className={`bg-white/95 backdrop-blur-lg w-full flex flex-col items-center space-y-6 py-6 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform border-b border-gray-100 shadow-lg ${menuOpen
-              ? "scale-y-100 opacity-100"
-              : "scale-y-0 opacity-0 h-0 overflow-hidden"
+            ? "scale-y-100 opacity-100"
+            : "scale-y-0 opacity-0 h-0 overflow-hidden"
             }`}
-        >
-          {/* Navigation Links */}
+        >          {/* Navigation Links */}
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -317,7 +316,12 @@ const Header = () => {
           >
             Contact
           </NavLink>
-
+          <button
+            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+            onClick={handleRedirect}
+          >
+            DD GRADE FILMS
+          </button>
           <div className="flex space-x-6 pt-4">
             <a
               href="https://www.instagram.com/dd_grade/?hl=en"
@@ -352,7 +356,10 @@ const Header = () => {
                 </div>
               )}
               {showResults && (
-                <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-md shadow-lg z-50 max-h-96 overflow-y-auto">
+                <div
+                  className="absolute bottom-full left-0 mb-1 w-full bg-white rounded-md shadow-lg z-50 max-h-96 overflow-y-auto"
+                  onWheel={(e) => e.stopPropagation()}
+                >
                   {searchResults.map((product) => (
                     <div
                       key={product.id}
@@ -376,14 +383,9 @@ const Header = () => {
                   ))}
                 </div>
               )}
+            </div>          
             </div>
-          </div>
-          <button
-            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-3 px-8 rounded-full mt-4 shadow-md hover:shadow-lg transition-all duration-300"
-            onClick={handleRedirect}
-          >
-            DD GRADE FILMS
-          </button>
+
         </div>
       </div>
 

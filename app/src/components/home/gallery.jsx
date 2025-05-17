@@ -16,21 +16,21 @@ const WeddingGallery = () => {
       id: 1,
       category: 'traditional',
       title: 'Traditional Indian Wedding',
-      image: 'imgs/weddings/1.jpg',
+      image: 'imgs/weddings/9.jpg',
       year: '2023'
     },
     {
       id: 2,
       category: 'destination',
       title: 'Beach Wedding in Goa',
-      image: 'imgs/weddings/1.jpg',
+      image: 'imgs/weddings/10.jpg',
       year: '2023'
     },
     {
       id: 3,
       category: 'traditional',
       title: 'Grand Palace Wedding',
-      image: 'imgs/weddings/1.jpg',
+      image: 'imgs/weddings/11.jpg',
       year: '2022'
     },
     {
@@ -44,20 +44,20 @@ const WeddingGallery = () => {
       id: 5,
       category: 'destination',
       title: 'Mountain Resort Wedding',
-      image: 'imgs/weddings/1.jpg',
+      image: 'imgs/weddings/13.png',
       year: '2021'
     },
     {
       id: 6,
       category: 'modern',
       title: 'Urban Rooftop Wedding',
-      image: 'imgs/weddings/1.jpg',
+      image: 'imgs/weddings/12.png',
       year: '2021'
     },
   ];
 
-  const filteredImages = activeCategory === 'all' 
-    ? galleryData 
+  const filteredImages = activeCategory === 'all'
+    ? galleryData
     : galleryData.filter(item => item.category === activeCategory);
 
   const openLightbox = (index) => {
@@ -118,17 +118,16 @@ const WeddingGallery = () => {
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredImages.map((item, index) => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
                 onClick={() => openLightbox(index)}
               >
-                <div className="aspect-w-4 aspect-h-3">
-                  {/* Replace with Next.js Image component in production */}
-                  <img 
-                    src={item.image} 
+                <div className="h-150 w-full relative">
+                  <img
+                    src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -147,9 +146,9 @@ const WeddingGallery = () => {
             <p className="text-gray-600 max-w-2xl mx-auto mb-6">
               Let's create beautiful memories together. Contact us to discuss your wedding photography needs.
             </p>
-            <button 
-            onClick={() => navigate('/contact')}
-            className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300">
+            <button
+              onClick={() => navigate('/contact')}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300">
               Book Your Wedding Shoot
             </button>
           </div>
@@ -158,15 +157,15 @@ const WeddingGallery = () => {
         {/* Lightbox Modal */}
         {lightboxOpen && (
           <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-            <button 
+            <button
               onClick={() => setLightboxOpen(false)}
               className="absolute top-6 right-6 text-white text-3xl"
             >
               &times;
             </button>
             <div className="max-w-4xl w-full">
-              <img 
-                src={filteredImages[currentImage].image} 
+              <img
+                src={filteredImages[currentImage].image}
                 alt={filteredImages[currentImage].title}
                 className="w-full h-auto max-h-[80vh] object-contain"
               />
@@ -175,13 +174,13 @@ const WeddingGallery = () => {
                 <p className="text-amber-300">{filteredImages[currentImage].year}</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setCurrentImage((prev) => (prev > 0 ? prev - 1 : filteredImages.length - 1))}
               className="absolute left-6 text-white text-4xl"
             >
               &#8249;
             </button>
-            <button 
+            <button
               onClick={() => setCurrentImage((prev) => (prev < filteredImages.length - 1 ? prev + 1 : 0))}
               className="absolute right-6 text-white text-4xl"
             >

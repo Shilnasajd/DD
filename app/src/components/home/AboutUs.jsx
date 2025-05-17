@@ -42,7 +42,7 @@ const AboutUs = () => {
             </div>
             <div className="relative h-96 rounded-xl overflow-hidden shadow-xl">
               <img
-                src="/imgs/4.avif"
+                src="/imgs/1.avif"
                 alt="Our studio"
                 className="w-full h-full object-cover"
               />
