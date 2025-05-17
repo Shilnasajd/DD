@@ -226,7 +226,7 @@ const ProductDetails = () => {
           </p>
           <div className="flex gap-4">
             <button
-              className="bg-amber-500 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:bg-amber-600 transition-all duration-300"
+              className="bg-amber-500 text-white font-semibold py-3 px-8 rounded-full shadow hover:bg-amber-600 transition-all duration-300"
               onClick={() => {
                 setIsOpen(true);
                 setMultiDateMode(false);
@@ -344,7 +344,7 @@ const ProductDetails = () => {
               <div className={`${!multiDateMode && "flex flex-col md:flex-row gap-6 w-full"}`}>
                 {/* Left Date Picker */}
                 <div
-                  className="w-full md:w-1/2 p-4 bg-white rounded shadow ml-[-10px]"
+                  className="w-full md:w-4/4 p-4 bg-white rounded shadow"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
