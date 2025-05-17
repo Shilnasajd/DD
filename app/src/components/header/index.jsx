@@ -1,15 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
 
   const handleRedirect = () => {
     navigate("/gallery");
   };
-  
+
+  // Handle clicks outside the search area to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Search API call with debounce
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery.trim() !== "") {
+        performSearch();
+      } else {
+        setSearchResults([]);
+        setShowResults(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  const performSearch = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/products/search/?search=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
+      const data = await response.json();
+      setSearchResults(data);
+      setShowResults(data.length > 0);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchFocus = () => {
+    if (searchResults.length > 0) {
+      setShowResults(true);
+    }
+  };
+
+  const handleResultClick = (productId) => {
+    // Get current date in YYYY-MM-DD format
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0];
+
+    // Navigate to product page with ID and current date
+    navigate(`/${productId}`, {
+      state: {
+        apiUrl: `https://dd-3ecg.onrender.com/api/get_product/?product=${productId}&date=${dateString}`
+      }
+    });
+
+    setSearchQuery("");
+    setShowResults(false);
+    setMenuOpen(false);
+  };
 
   return (
     <>
@@ -46,7 +124,10 @@ const Header = () => {
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                  `transition-colors duration-300 ${isActive
+                    ? "text-black font-semibold border-b-2 border-amber-500"
+                    : "hover:text-amber-600"
+                  }`
                 }
               >
                 Home
@@ -54,7 +135,10 @@ const Header = () => {
               <NavLink
                 to="/rentals"
                 className={({ isActive }) =>
-                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                  `transition-colors duration-300 ${isActive
+                    ? "text-black font-semibold border-b-2 border-amber-500"
+                    : "hover:text-amber-600"
+                  }`
                 }
               >
                 Rental Store
@@ -62,7 +146,10 @@ const Header = () => {
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                  `transition-colors duration-300 ${isActive
+                    ? "text-black font-semibold border-b-2 border-amber-500"
+                    : "hover:text-amber-600"
+                  }`
                 }
               >
                 About
@@ -70,7 +157,10 @@ const Header = () => {
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
-                  `transition-colors duration-300 ${isActive ? 'text-black font-semibold border-b-2 border-amber-500' : 'hover:text-amber-600'}`
+                  `transition-colors duration-300 ${isActive
+                    ? "text-black font-semibold border-b-2 border-amber-500"
+                    : "hover:text-amber-600"
+                  }`
                 }
               >
                 Contact
@@ -79,22 +169,100 @@ const Header = () => {
 
             {/* Social Icons */}
             <div className="flex space-x-5 ml-8 border-l border-gray-200 pl-8">
-              <a href="https://www.instagram.com/dd_grade/?hl=en" className="text-gray-500 hover:text-amber-600 transition-colors duration-300">
+              <a
+                href="https://www.instagram.com/dd_grade/?hl=en"
+                className="text-gray-500 hover:text-amber-600 transition-colors duration-300"
+              >
                 <Icon icon="mdi:instagram" className="text-xl" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors duration-300">
+              <a
+                href="#"
+                className="text-gray-500 hover:text-blue-600 transition-colors duration-300"
+              >
                 <Icon icon="mdi:facebook" className="text-xl" />
               </a>
-              <div className="relative">
+              <div className="relative" ref={searchRef}>
                 <input
                   type="text"
                   placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={handleSearchFocus}
                   className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
                 <Icon
                   icon="mdi:magnify"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl"
                 />
+                {isLoading && (
+                  <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                  </div>
+                )}
+                {showResults && (
+                  <div className="flex space-x-6 pt-4">
+                    <a
+                      href="https://www.instagram.com/dd_grade/?hl=en"
+                      className="text-gray-500 hover:text-amber-600 transition-colors duration-300"
+                    >
+                      <Icon icon="mdi:instagram" className="text-2xl" />
+                    </a>
+                    <a
+                      href="#"
+                      className="text-gray-500 hover:text-blue-600 transition-colors duration-300"
+                    >
+                      <Icon icon="mdi:facebook" className="text-2xl" />
+                    </a>
+                    <div className="relative flex items-center" ref={searchRef}>
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        onFocus={handleSearchFocus}
+                        className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 w-32 transition-all duration-300 hover:w-36"
+                      />
+                      <Icon
+                        icon="mdi:magnify"
+                        className="absolute right-2 text-gray-400 text-xl"
+                      />
+                      {isLoading && (
+                        <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                        </div>
+                      )}
+                      {showResults && (
+                        <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-md shadow-lg z-50 max-h-96 overflow-y-auto">
+                          {searchResults.map((product) => (
+                            <div
+                              key={product.id}
+                              className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 flex items-center"
+                              onClick={() => {
+                                console.log('button clicked');
+
+                                handleResultClick(product.id);
+                              }}
+                            >
+                              <img
+                                src={product.image.split("\n")[0]}
+                                alt={product.name}
+                                className="w-10 h-10 object-cover rounded mr-3"
+                              />
+                              <div>
+                                <p className="font-medium text-gray-800">
+                                  {product.name}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {product.one_line}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             {/* Shopping Cart with badge */}
@@ -109,12 +277,13 @@ const Header = () => {
             </div>
 
             {/* Premium Button */}
-    <button
-      onClick={handleRedirect}
-      className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
-    >
-      DD GRADE FILMS
-    </button>          </div>
+            <button
+              onClick={handleRedirect}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
+            >
+              DD GRADE FILMS
+            </button>
+          </div>
 
           {/* Mobile Icons */}
           <div className="flex md:hidden items-center space-x-6">
@@ -153,7 +322,10 @@ const Header = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
+              } transition-colors duration-300`
             }
             onClick={() => setMenuOpen(false)}
           >
@@ -162,7 +334,10 @@ const Header = () => {
           <NavLink
             to="/rentals"
             className={({ isActive }) =>
-              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
+              } transition-colors duration-300`
             }
             onClick={() => setMenuOpen(false)}
           >
@@ -171,7 +346,10 @@ const Header = () => {
           <NavLink
             to="/about"
             className={({ isActive }) =>
-              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
+              } transition-colors duration-300`
             }
             onClick={() => setMenuOpen(false)}
           >
@@ -180,7 +358,10 @@ const Header = () => {
           <NavLink
             to="/contact"
             className={({ isActive }) =>
-              `text-lg ${isActive ? 'text-amber-600 font-semibold' : 'text-gray-700 hover:text-amber-500'} transition-colors duration-300`
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
+              } transition-colors duration-300`
             }
             onClick={() => setMenuOpen(false)}
           >
@@ -188,22 +369,65 @@ const Header = () => {
           </NavLink>
 
           <div className="flex space-x-6 pt-4">
-            <a href="https://www.instagram.com/dd_grade/?hl=en" className="text-gray-500 hover:text-amber-600 transition-colors duration-300">
+            <a
+              href="https://www.instagram.com/dd_grade/?hl=en"
+              className="text-gray-500 hover:text-amber-600 transition-colors duration-300"
+            >
               <Icon icon="mdi:instagram" className="text-2xl" />
             </a>
-            <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors duration-300">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-blue-600 transition-colors duration-300"
+            >
               <Icon icon="mdi:facebook" className="text-2xl" />
             </a>
-            <div className="relative flex items-center">
+            <div className="relative flex items-center" ref={searchRef}>
               <input
                 type="text"
                 placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
                 className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 w-32 transition-all duration-300 hover:w-36"
               />
               <Icon
                 icon="mdi:magnify"
                 className="absolute right-2 text-gray-400 text-xl"
               />
+              {isLoading && (
+                <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                </div>
+              )}
+              {showResults && (
+                <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-md shadow-lg z-50 max-h-96 overflow-y-auto">
+                  {searchResults.map((product) => (
+                    <div
+                      key={product.id}
+                      className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 flex items-center"
+                      onClick={() => {
+                        console.log('button clicked');
+
+                        handleResultClick(product.id);
+                      }}
+                    >
+                      <img
+                        src={product.image.split("\n")[0]}
+                        alt={product.name}
+                        className="w-10 h-10 object-cover rounded mr-3"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          {product.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {product.one_line}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <button
