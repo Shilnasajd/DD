@@ -82,7 +82,7 @@ const Admin = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            if (formData.username === 'ddcameras12@gmail.com' && formData.password === '@Cheilmea@18') {
+            if (formData.username === 'ddcameras12@gmail.com' && formData.password === '@Cheilmea85') {
                 localStorage.setItem('adminToken', 'sample_token');
                 setIsLoggedIn(true);
                 fetchBookings();
