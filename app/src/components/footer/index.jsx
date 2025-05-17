@@ -78,15 +78,15 @@ const Footer = () => {
                 "&:hover": { color: "#e4405f" },
               }}
             />
-            <TwitterIcon
+            {/* <TwitterIcon
               sx={{
                 cursor: "pointer",
                 color: "#eee",
                 transition: "color 0.3s",
-                "&:hover": { color: "#1da1f2" },
-              }}
-            />
-            <Icon
+                "&:hover": { color: "#1da1f2" }, */}
+              {/* }}
+            /> */}
+            {/* <Icon
               icon="ic:baseline-tiktok"
               style={{
                 cursor: "pointer",
@@ -96,7 +96,7 @@ const Footer = () => {
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#69C9D0")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#eee")}
-            />
+            /> */}
           </Box>
           <Typography
             variant="body2"

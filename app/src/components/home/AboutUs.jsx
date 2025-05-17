@@ -140,7 +140,7 @@ const AboutUs = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <NavLink
               to="/rentals"
-              className="bg-amber-500 text-white font-semibold py-3 px-8 rounded-full inline-block shadow-md hover:bg-amber-600 transition-all duration-300"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold py-2 px-6 rounded-full ml-6 shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-amber-700 transition-all duration-300"
             >
               Browse Equipment
             </NavLink>
