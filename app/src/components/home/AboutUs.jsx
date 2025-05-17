@@ -51,14 +51,17 @@ const AboutUs = () => {
 
         {/* Team Section */}
         <div className="mb-24">
-          <center><h2 className="text-3xl font-bold text-gray-900 mb-6 -mt-10">Meet the team</h2></center><br />
+          <center>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 -mt-10">Meet the team</h2>
+          </center>
+          <br />
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                name: "Alex Morgan",
+                name: "Muhammed Shanoob",
                 role: "Founder & CEO",
-                bio: "With over 15 years in the film industry, Alex ensures we stay at the cutting edge of cinematography technology.",
-                img: "/imgs/users/ravi.png"
+                bio: "With over 15 years in the film industry, Shanoob ensures we stay at the cutting edge of cinematography technology.",
+                img: "/imgs/users/shanoob.jpg"
               },
               {
                 name: "Sarah Chen",
@@ -73,19 +76,22 @@ const AboutUs = () => {
                 img: "/imgs/users/ravi.png"
               }
             ].map((member, index) => (
-              <div key={index} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="h-64 overflow-hidden">
+              <div
+                key={index}
+                className="bg-amber-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center"
+              >
+                <div className="h-64 w-full overflow-hidden flex items-center justify-center">
                   <img
                     src={member.img}
                     alt={member.name}
-                    className="w-full h-full object-cover"
+                    className="h-full object-contain mt-8"
                   />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
                   <p className="text-amber-600 font-medium mb-3">{member.role}</p>
                   <p className="text-gray-600">{member.bio}</p>
-                  <div className="flex space-x-4 mt-4">
+                  <div className="flex justify-center space-x-4 mt-4">
                     <a href="#" className="text-gray-500 hover:text-amber-600">
                       <Icon icon="mdi:linkedin" className="text-xl" />
                     </a>

@@ -16,42 +16,42 @@ const WeddingGallery = () => {
       id: 1,
       category: 'traditional',
       title: 'Traditional Indian Wedding',
-      image: '/wedding-1.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2023'
     },
     {
       id: 2,
       category: 'destination',
       title: 'Beach Wedding in Goa',
-      image: '/wedding-2.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2023'
     },
     {
       id: 3,
       category: 'traditional',
       title: 'Grand Palace Wedding',
-      image: '/wedding-3.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2022'
     },
     {
       id: 4,
       category: 'modern',
       title: 'Minimalist Wedding',
-      image: '/wedding-4.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2022'
     },
     {
       id: 5,
       category: 'destination',
       title: 'Mountain Resort Wedding',
-      image: '/wedding-5.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2021'
     },
     {
       id: 6,
       category: 'modern',
       title: 'Urban Rooftop Wedding',
-      image: '/wedding-6.jpg',
+      image: 'imgs/weddings/1.jpg',
       year: '2021'
     },
   ];

@@ -29,7 +29,6 @@ const CheckoutPage = () => {
   const [promoError, setPromoError] = useState("");
   const [discountedAmount, setDiscountedAmount] = useState(null);
 
-
   const handleContactInfoChange = (e) => {
     const { name, value } = e.target;
     setContactInfo((prev) => ({ ...prev, [name]: value }));
@@ -45,10 +44,9 @@ const CheckoutPage = () => {
   };
 
   const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
+
   // Calculate price based on booking type
   const calculatePrice = () => {
-    const priceValue = parseFloat(product.price.split(" ")[0].replace(/[^0-9.]/g, ''));
-
     let finalPrice = priceValue;
 
     if (isRangeBooking && selectedDates?.length) {
@@ -56,7 +54,7 @@ const CheckoutPage = () => {
     }
 
     // Subtract the promo discount from the total
-    const discountedPrice = finalPrice - discountedAmount;
+    const discountedPrice = finalPrice - (discountedAmount || 0);
 
     return discountedPrice > 0 ? discountedPrice : 0; // Ensure price doesn't go below zero
   };
@@ -81,7 +79,6 @@ const CheckoutPage = () => {
   };
 
   const handleSubmit = async () => {
-    const isRange = isRangeBooking;
     const totalDue = calculatePrice();
 
     const payload = {
@@ -91,7 +88,7 @@ const CheckoutPage = () => {
       phone: contactInfo.phoneNumber,
       comment: contactInfo.comment,
       price: totalDue,
-      ...(isRange
+      ...(isRangeBooking
         ? { dates: selectedDates }
         : {
           date: dayjs(selectedDate).format("YYYY-MM-DD"),
@@ -99,7 +96,7 @@ const CheckoutPage = () => {
         }),
     };
 
-    const apiEndpoint = isRange
+    const apiEndpoint = isRangeBooking
       ? "https://ddcameras.com/backend/api/book_multiple_dates/"
       : "https://ddcameras.com/backend/api/bookings/";
 
@@ -138,6 +135,9 @@ const CheckoutPage = () => {
   const subtotal = calculatePrice();
   const total = subtotal;
 
+  // Calculate days for display
+  const bookingDays = isRangeBooking ? selectedDates?.length || 0 : 1;
+
   return (
     <div className="p-6 max-w-5xl mx-auto bg-white rounded-lg relative">
       <div
@@ -171,7 +171,7 @@ const CheckoutPage = () => {
                     <h3 className="font-medium text-gray-900">{product.name}</h3>
                     <div className="mt-1 text-sm text-gray-500">
                       {isRangeBooking ? (
-                        <span>{selectedDates.length} day{selectedDates.length > 1 ? 's' : ''}</span>
+                        <span>{bookingDays} day{bookingDays > 1 ? 's' : ''}</span>
                       ) : (
                         <span>{dayjs(selectedDate).format('MMM D, YYYY')} • {selectedSlot?.time}</span>
                       )}
@@ -180,23 +180,18 @@ const CheckoutPage = () => {
                   <div className="text-right">
                     <div className="font-medium text-gray-900">
                       ₹{priceValue.toFixed(2)}
-                      {isRangeBooking && selectedDates?.length > 1 && (
-                        <span className="text-gray-500 text-xs ml-1"></span>
-                      )}
                     </div>
                   </div>
                 </div>
 
                 {/* Pricing Breakdown */}
                 <div className="space-y-3">
-
-
                   {isRangeBooking ? (
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Dates</span>
                         <span className="font-medium text-right">
-                          {selectedDates.map((date, index) => (
+                          {selectedDates?.map((date, index) => (
                             <div key={index}>
                               {dayjs(date).format('MMM D, YYYY')}
                             </div>
@@ -205,7 +200,7 @@ const CheckoutPage = () => {
                       </div>
                       <div className="flex justify-between text-sm border-t border-gray-100 pt-2">
                         <span className="text-gray-600">Total Days</span>
-                        <span className="font-medium">{selectedDates.length} days</span>
+                        <span className="font-medium">{bookingDays} days</span>
                       </div>
                     </div>
                   ) : (
@@ -219,9 +214,8 @@ const CheckoutPage = () => {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium">
-                      ₹{(priceValue * selectedDates.length).toFixed(2)} ({priceValue.toFixed(2)} × {selectedDates.length})
+                      ₹{(priceValue * bookingDays).toFixed(2)} ({priceValue.toFixed(2)} × {bookingDays})
                     </span>
-
                   </div>
                   {discountedAmount && (
                     <div className="flex justify-between text-sm">
