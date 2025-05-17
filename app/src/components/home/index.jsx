@@ -141,7 +141,7 @@ const HomePage = () => {
               img: "/imgs/rm.jpg"
             },
             {
-              name: "Muneer.",
+              name: "Thirdeye Photography.",
               text: "Supportive team and top-tier rentals. We shot our indie short using their RED kit!",
               img: "/imgs/muneer.jpg"
             }
