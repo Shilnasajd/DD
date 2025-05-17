@@ -11,7 +11,7 @@ import {
 import { useNavigate } from 'react-router';
 
 const fetchProducts = async () => {
-  const res = await axios.get('https://dd-3ecg.onrender.com/api/products');
+  const res = await axios.get('https://ddcameras.com/backend/api/products');
   return res.data.map((product) => ({
     ...product,
     image: product.image.trim(),

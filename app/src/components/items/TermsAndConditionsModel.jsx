@@ -25,7 +25,7 @@ const TermsAndConditionsModel = ({ open, onClose, email, onAccept }) => {
     setLoading(true); // Show spinner
 
     try {
-      const response = await fetch('https://dd-3ecg.onrender.com/api/save_terms/', {
+      const response = await fetch('https://ddcameras.com/backend/api/save_terms/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -47,7 +47,7 @@ const Header = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/products/search/?search=${encodeURIComponent(
+        `https://ddcameras.com/backend/api/products/search/?search=${encodeURIComponent(
           searchQuery
         )}`
       );
@@ -80,7 +80,7 @@ const Header = () => {
     // Navigate to product page with ID and current date
     navigate(`/${productId}`, {
       state: {
-        apiUrl: `https://dd-3ecg.onrender.com/api/get_product/?product=${productId}&date=${dateString}`
+        apiUrl: `https://ddcameras.com/backend/api/get_product/?product=${productId}&date=${dateString}`
       }
     });
 

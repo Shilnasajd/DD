@@ -21,7 +21,7 @@ const ProductDetails = () => {
 
   const fetchProductDetails = async () => {
     const res = await axios.get(
-      `https://dd-3ecg.onrender.com/api/get_product/?product=${id}&date=${selectedDate}`
+      `https://ddcameras.com/backend/api/get_product/?product=${id}&date=${selectedDate}`
     );
     return res.data[0];
   };
@@ -43,7 +43,7 @@ const ProductDetails = () => {
   } = useQuery({
     queryKey: ["slots"],
     queryFn: async () => {
-      const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
+      const res = await axios.get("https://ddcameras.com/backend/api/slots/");
       return res.data;
     },
   });

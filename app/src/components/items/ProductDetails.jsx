@@ -33,7 +33,7 @@ const ProductDetails = () => {
   const [cartCount, setCartCount] = useState(0);
 
   const fetchSlots = async () => {
-    const res = await axios.get("https://dd-3ecg.onrender.com/api/slots/");
+    const res = await axios.get("https://ddcameras.com/backend/api/slots/");
     return res.data;
   };
 
@@ -50,7 +50,7 @@ const ProductDetails = () => {
       if (showSpinner) setModalLoading(true);
       setIsLoading(true);
       const res = await axios.get(
-        `https://dd-3ecg.onrender.com/api/get_product/?product=${id}&date=${date}`
+        `https://ddcameras.com/backend/api/get_product/?product=${id}&date=${date}`
       );
       const prod = res.data[0];
       setProduct(prod);
@@ -73,7 +73,7 @@ const ProductDetails = () => {
       // Check each date in the range
       for (const date of dates) {
         const res = await axios.get(
-          `https://dd-3ecg.onrender.com/api/get_product/?product=${id}&date=${date}`
+          `https://ddcameras.com/backend/api/get_product/?product=${id}&date=${date}`
         );
         const prod = res.data[0];
         availability[date] = prod.available !== "Out of stock";

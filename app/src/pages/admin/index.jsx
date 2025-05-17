@@ -33,7 +33,7 @@ const Admin = () => {
 
     const fetchBookings = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/bookings/');
+            const response = await axios.get('https://ddcameras.com/backend/api/bookings/');
             setBookings(response.data);
             // Group bookings by order_id
             const grouped = groupBookingsByOrderId(response.data);
@@ -108,7 +108,7 @@ const Admin = () => {
 
     const handleStatusUpdate = async (bookingId, newStatus) => {
         try {
-            await axios.patch(`http://localhost:8000/api/bookings/${bookingId}/update-status/`, {
+            await axios.patch(`https://ddcameras.com/backend/api/bookings/${bookingId}/update-status/`, {
                 status: newStatus
             });
             // Refresh the bookings
@@ -123,7 +123,7 @@ const Admin = () => {
         try {
             // Update all bookings in the group
             await Promise.all(selectedBookingGroup.bookings.map(booking => 
-                axios.patch(`http://localhost:8000/api/bookings/${booking.id}/update-status/`, {
+                axios.patch(`https://ddcameras.com/backend/api/bookings/${booking.id}/update-status/`, {
                     status: editStatus
                 })
             ));
