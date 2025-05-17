@@ -105,7 +105,7 @@ const Header = () => {
           <div className="flex items-center space-x-2">
             <span className="animate-pulse">✨</span>
             <h1 className="text-sm font-medium tracking-wider">
-              EXCLUSIVE DISCOUNTS ON CAMERA RENTALS TODAY!
+              EXCLUSIVE DISCOUNTS ON CAMERA RENTALS!
             </h1>
             <span className="animate-pulse">✨</span>
           </div>
@@ -262,100 +262,95 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu */}
-<div
-          className={`bg-white/95 backdrop-blur-lg w-full flex flex-col items-center space-y-6 py-6 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform border-b border-gray-100 shadow-lg ${
-            menuOpen
+        <div
+          className={`bg-white/95 backdrop-blur-lg w-full flex flex-col items-center space-y-6 py-6 px-4 md:hidden origin-top transition-all duration-300 ease-in-out transform border-b border-gray-100 shadow-lg ${menuOpen
               ? "scale-y-100 opacity-100"
               : "scale-y-0 opacity-0 h-0 overflow-hidden"
-          }`}
->
-  {/* Navigation Links */}
-  <NavLink
-    to="/"
+            }`}
+        >
+          {/* Navigation Links */}
+          <NavLink
+            to="/"
             className={({ isActive }) =>
-              `text-lg ${
-                isActive
-                  ? "text-amber-600 font-semibold"
-                  : "text-gray-700 hover:text-amber-500"
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
               } transition-colors duration-300`
             }
-    onClick={() => setMenuOpen(false)}
-  >
-    Home
+            onClick={() => setMenuOpen(false)}
+          >
+            Home
           </NavLink>
           <NavLink
-    to="/rentals"
+            to="/rentals"
             className={({ isActive }) =>
-              `text-lg ${
-                isActive
-                  ? "text-amber-600 font-semibold"
-                  : "text-gray-700 hover:text-amber-500"
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
               } transition-colors duration-300`
             }
-    onClick={() => setMenuOpen(false)}
-  >
-    Rental Store
-  </NavLink>
-  <NavLink
-    to="/about"
-            className={({ isActive }) =>
-              `text-lg ${
-                isActive
-                  ? "text-amber-600 font-semibold"
-                  : "text-gray-700 hover:text-amber-500"
-              } transition-colors duration-300`
-            }
-    onClick={() => setMenuOpen(false)}
-  >
-    About
+            onClick={() => setMenuOpen(false)}
+          >
+            Rental Store
           </NavLink>
           <NavLink
-    to="/contact"
+            to="/about"
             className={({ isActive }) =>
-              `text-lg ${
-                isActive
-                  ? "text-amber-600 font-semibold"
-                  : "text-gray-700 hover:text-amber-500"
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
               } transition-colors duration-300`
             }
-    onClick={() => setMenuOpen(false)}
-  >
-    Contact
-  </NavLink>
+            onClick={() => setMenuOpen(false)}
+          >
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `text-lg ${isActive
+                ? "text-amber-600 font-semibold"
+                : "text-gray-700 hover:text-amber-500"
+              } transition-colors duration-300`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
+            Contact
+          </NavLink>
 
-  <div className="flex space-x-6 pt-4">
-    <a
-      href="https://www.instagram.com/dd_grade/?hl=en"
-      className="text-gray-500 hover:text-amber-600 transition-colors duration-300"
-    >
-      <Icon icon="mdi:instagram" className="text-2xl" />
-    </a>
-    
-    <a
-      href="#"
-      className="text-gray-500 hover:text-blue-600 transition-colors duration-300"
-    >
-      <Icon icon="mdi:facebook" className="text-2xl" />
-    </a>
-      <div className="relative flex items-center" ref={searchRef}>
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={handleSearchChange}
-        onFocus={handleSearchFocus}
+          <div className="flex space-x-6 pt-4">
+            <a
+              href="https://www.instagram.com/dd_grade/?hl=en"
+              className="text-gray-500 hover:text-amber-600 transition-colors duration-300"
+            >
+              <Icon icon="mdi:instagram" className="text-2xl" />
+            </a>
+
+            <a
+              href="#"
+              className="text-gray-500 hover:text-blue-600 transition-colors duration-300"
+            >
+              <Icon icon="mdi:facebook" className="text-2xl" />
+            </a>
+            <div className="relative flex items-center" ref={searchRef}>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
                 className="pl-2 pr-8 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 w-32 transition-all duration-300 hover:w-36"
-      />
-      <Icon
-        icon="mdi:magnify"
-        className="absolute right-2 text-gray-400 text-xl"
-      />
-      
-      {isLoading && (
-        <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-        </div>
-      )}           
+              />
+              <Icon
+                icon="mdi:magnify"
+                className="absolute right-2 text-gray-400 text-xl"
+              />
+
+              {isLoading && (
+                <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                </div>
+              )}
               {showResults && (
                 <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-md shadow-lg z-50 max-h-96 overflow-y-auto">
                   {searchResults.map((product) => (

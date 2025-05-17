@@ -110,7 +110,7 @@ const HomePage = () => {
               {
                 title: "Music Video - “Lost in Light”",
                 description: "Filmed using our complete gimbal and lighting package.",
-                image: "/imgs/1.avif"
+                image: "/imgs/bhs.png"
               }
             ].map((project, index) => (
               <div key={index} className="bg-amber-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">

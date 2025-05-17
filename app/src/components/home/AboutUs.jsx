@@ -66,16 +66,16 @@ const AboutUs = () => {
                 img: "/imgs/users/shanoob.jpg"
               },
               {
-                name: "Sarah Chen",
-                role: "Head Technician",
-                bio: "Our equipment whisperer with a keen eye for detail and perfection in gear maintenance.",
-                img: "/imgs/users/lena.jpg"
+                name: "Abid",
+                role: "Marketing Head",
+                bio: "The strategic mind behind our brand, Abid crafts campaigns that connect and captivate our audience.",
+                img: "/imgs/abid.jpg"
               },
               {
-                name: "Jamal Wright",
-                role: "Client Relations",
-                bio: "Your go-to person for recommendations and ensuring you get exactly what you need for your project.",
-                img: "/imgs/users/ravi.png"
+                name: "Faris",
+                role: "Video Editor",
+                bio: "Bringing stories to life frame by frame, Faris ensures every cut and transition is picture-perfect.",
+                img: "/imgs/faris.jpg"
               }
             ].map((member, index) => (
               <div
@@ -93,14 +93,14 @@ const AboutUs = () => {
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
                   <p className="text-amber-600 font-medium mb-3">{member.role}</p>
                   <p className="text-gray-600">{member.bio}</p>
-                  <div className="flex justify-center space-x-4 mt-4">
+                  {/* <div className="flex justify-center space-x-4 mt-4">
                     <a href="#" className="text-gray-500 hover:text-amber-600">
                       <Icon icon="mdi:linkedin" className="text-xl" />
                     </a>
                     <a href="#" className="text-gray-500 hover:text-blue-500">
                       <Icon icon="mdi:twitter" className="text-xl" />
                     </a>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}
